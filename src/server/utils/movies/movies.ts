@@ -8,7 +8,7 @@ interface Top250MovieResponse {
   errorMessage: string;
 }
 
-interface Top250MovieDetail {
+export interface Top250MovieDetail {
   id: string;
   rank: string;
   title: string;
