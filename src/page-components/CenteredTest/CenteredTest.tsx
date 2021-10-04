@@ -4,7 +4,7 @@ import TinderCards from '../../components/TinderCard/TinderCards';
 
 export default function CenteredTest() {
   return (
-    <Center w="100vw" h="100vh" bg="beige">
+    <Center w="100vw" h="100vh" bg="beige" overflow="hidden">
       <TinderCards />
     </Center>
   );

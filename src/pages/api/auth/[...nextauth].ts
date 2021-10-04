@@ -1,5 +1,8 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Profile } from 'next-auth';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import GithubProvider from 'next-auth/providers/github';
+import Adapters from 'next-auth/adapters';
+import { prisma } from '../../../server/context';
 
 export default NextAuth({
   // Configure one or more authentication providers
@@ -13,4 +16,6 @@ export default NextAuth({
   jwt: {
     signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,
   },
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.SECRET,
 });

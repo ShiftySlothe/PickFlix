@@ -1,48 +1,9 @@
+import { Button, ButtonGroup } from '@chakra-ui/button';
+import { Box, Flex, Heading } from '@chakra-ui/layout';
 import React, { useState, useMemo, createRef, useEffect } from 'react';
-import TinderCard from 'react-tinder-card';
+import TinderCard, { Direction, API, Props } from 'react-tinder-card';
 import { Top250MovieDetail } from '../../server/utils/movies/Movies';
 import { top250 as db } from './db';
-
-declare type Direction = 'left' | 'right' | 'up' | 'down';
-declare type SwipeHandler = (direction: Direction) => void;
-declare type CardLeftScreenHandler = (direction: Direction) => void;
-
-declare interface API {
-  /**
-   * Programmatically trigger a swipe of the card in one of the valid directions `'left'`, `'right'`, `'up'` and `'down'`. This function, `swipe`, can be called on a reference of the TinderCard instance. Check the [example](https://github.com/3DJakob/react-tinder-card-demo/blob/master/src/examples/Advanced.js) code for more details on how to use this.
-   *
-   * @param dir The direction in which the card should be swiped. One of: `'left'`, `'right'`, `'up'` and `'down'`.
-   */
-  swipe(dir?: Direction): Promise<void>;
-}
-
-declare interface Props {
-  ref?: React.Ref<API>;
-
-  /**
-   * Whether or not to let the element be flicked away off-screen after a swipe.
-   *
-   * @default true
-   */
-  flickOnSwipe?: boolean;
-
-  /**
-   * Callback that will be executed when a swipe has been completed. It will be called with a single string denoting which direction the swipe was in: `'left'`, `'right'`, `'up'` or `'down'`.
-   */
-  onSwipe?: SwipeHandler;
-
-  /**
-   * Callback that will be executed when a `TinderCard` has left the screen. It will be called with a single string denoting which direction the swipe was in: `'left'`, `'right'`, `'up'` or `'down'`.
-   */
-  onCardLeftScreen?: CardLeftScreenHandler;
-
-  /**
-   * An array of directions for which to prevent swiping out of screen. Valid arguments are `'left'`, `'right'`, `'up'` and `'down'`.
-   *
-   * @default []
-   */
-  preventSwipe?: string[];
-}
 
 const alreadyRemoved: Top250MovieDetail[] = [];
 let movieState = db; // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
@@ -50,15 +11,6 @@ let movieState = db; // This fixes issues with updating characters state forcing
 const TinderCards: React.FC<Props> = () => {
   const [movies, setMovies] = useState(db);
   const [lastDirection, setLastDirection] = useState('');
-
-  useEffect(() => {
-    console.log('Already Removed');
-    console.log(alreadyRemoved);
-    console.log('Movies');
-    console.log(movies);
-    console.log('Movie State');
-    console.log(movieState);
-  }, [movies]);
 
   const childRefs = useMemo(
     () =>
@@ -78,8 +30,6 @@ const TinderCards: React.FC<Props> = () => {
     console.log(movie.title + ' left the screen!');
     movieState = movieState.filter((m) => m.id !== movie.id);
     setMovies(movieState);
-    console.log('is it here');
-    console.log(movieState);
   };
 
   const swipe = (dir: Direction) => {
@@ -95,27 +45,45 @@ const TinderCards: React.FC<Props> = () => {
   };
 
   return (
-    <>
-      <div className="cardContainer">
-        {movies.map((movie, index) => (
-          <div className="swipe" key={movie.id}>
-            <TinderCard
-              ref={childRefs[index]}
-              onSwipe={(dir) => swiped(dir, movie)}
-              onCardLeftScreen={() => outOfFrame(movie)}
-            >
-              <div className="card">
-                <h3>{movie.title}</h3>
-              </div>
-            </TinderCard>
-          </div>
-        ))}
-      </div>
-      <div className="buttons">
-        <button onClick={() => swipe('left')}>Swipe left!</button>
-        <button onClick={() => swipe('right')}>Swipe right!</button>
-      </div>
-    </>
+    <Box overflow="hidden">
+      <Flex flexDir="column" overflow="hidden">
+        <Box w="90vw" maxW="260px" h="300px" overflow="hidden">
+          {movies.map((movie, index) => (
+            <Box position="absolute" key={movie.id}>
+              <TinderCard
+                ref={childRefs[index]}
+                onSwipe={(dir) => swiped(dir, movie)}
+                onCardLeftScreen={() => outOfFrame(movie)}
+              >
+                <Flex
+                  position="relative"
+                  backgroundColor="white"
+                  backgroundSize="cover"
+                  backgroundPosition="50%"
+                  borderRadius="5px"
+                  width="80vw"
+                  maxW="260px"
+                  h="300px"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Heading p={2} fontSize="md">
+                    {movie.title}
+                  </Heading>
+                </Flex>
+              </TinderCard>
+            </Box>
+          ))}
+        </Box>
+
+        <Flex justifyContent="center" mt={3}>
+          <ButtonGroup>
+            <Button onClick={() => swipe('left')}>Swipe left!</Button>
+            <Button onClick={() => swipe('right')}>Swipe right!</Button>
+          </ButtonGroup>
+        </Flex>
+      </Flex>
+    </Box>
   );
 };
 

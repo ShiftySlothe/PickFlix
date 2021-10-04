@@ -9,7 +9,7 @@ const theme = extendTheme({
           height: 'auto',
           lineHeight: 'normal',
           verticalAlign: 'baseline',
-          color: '#2B222E',
+          color: 'white',
           _hover: {
             textDecoration: 'underline',
             _disabled: {
@@ -18,6 +18,23 @@ const theme = extendTheme({
           },
           _active: {
             color: '#58455E',
+          },
+        },
+        'red-button': {
+          padding: 3,
+          height: 'auto',
+          lineHeight: 'normal',
+          verticalAlign: 'baseline',
+          color: '#e50914',
+          _hover: {
+            textDecoration: 'underline',
+            backgroundColor: '#9b080f',
+            _disabled: {
+              textDecoration: 'none',
+            },
+          },
+          _active: {
+            backgroundColor: '#d60c16',
           },
         },
       },

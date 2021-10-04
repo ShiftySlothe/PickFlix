@@ -1,9 +1,8 @@
-import * as trpc from '@trpc/server';
+import { createRouter } from '../createRouter';
 import { z } from 'zod';
-import { getTop250Movies } from '../utils/movies/Movies';
+import { data } from '../db';
 
-export const moviesRouter = trpc
-  .router()
+export const moviesRouter = createRouter()
   .query('hello', {
     input: z
       .object({
@@ -16,12 +15,10 @@ export const moviesRouter = trpc
       };
     },
   })
-  .query('getTopMovies', {
-    async resolve() {
-      const moviesObj = await getTop250Movies();
-      const top250 = moviesObj.items;
-      return {
-        top250,
-      };
+  .mutation('addDummyData', {
+    async resolve({ ctx }) {
+      console.log(ctx.prisma);
+      const movies = await ctx.prisma.show.createMany({ data });
+      return movies;
     },
   });
