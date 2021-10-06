@@ -139,6 +139,7 @@ const mouseCoordinatesFromEvent = (e) => {
   return { x: e.clientX, y: e.clientY };
 };
 
+// eslint-disable-next-line react/display-name
 const TinderCard = React.forwardRef(
   (
     {
