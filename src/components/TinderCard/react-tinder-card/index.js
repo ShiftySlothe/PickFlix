@@ -1,6 +1,6 @@
 /* global WebKitCSSMatrix */
 import React from 'react';
-import sleep from 'sleep';
+import sleep from 'p-sleep';
 
 const settings = {
   snapBackDuration: 300,
