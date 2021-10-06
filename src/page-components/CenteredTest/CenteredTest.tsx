@@ -3,7 +3,6 @@ import React from 'react';
 import TinderCards from '../../components/TinderCard/TinderCards';
 import { trpc } from '../../server/utils/trpc';
 import NextError from 'next/error';
-import { Button } from '@chakra-ui/button';
 
 export default function CenteredTest() {
   const movieQuery = trpc.useQuery(['movies.get10FromIndex', 1]);
