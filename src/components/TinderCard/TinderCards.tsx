@@ -1,44 +1,43 @@
 import { Button, ButtonGroup } from '@chakra-ui/button';
 import { Box, Flex, Heading } from '@chakra-ui/layout';
-import React, { useState, useMemo, createRef, useEffect } from 'react';
-import TinderCard, { Direction, API, Props } from 'react-tinder-card';
-import { Top250MovieDetail } from '../../server/utils/movies/Movies';
-import { top250 as db } from './db';
+import React, { useMemo, useState, useEffect } from 'react';
+import TinderCard, { API, Direction } from './react-tinder-card';
+import { Movie } from '.prisma/client';
 
-const alreadyRemoved: Top250MovieDetail[] = [];
-let movieState = db; // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+interface TinderCardsProps {
+  movies: Movie[];
+}
 
-const TinderCards: React.FC<Props> = () => {
-  const [movies, setMovies] = useState(db);
+const TinderCards = ({ movies: m }: TinderCardsProps) => {
+  const alreadyRemoved: Movie[] = [];
+  const [movies, setMovies] = useState(m);
   const [lastDirection, setLastDirection] = useState('');
 
-  const childRefs = useMemo(
-    () =>
-      Array(db.length)
-        .fill(0)
-        .map((i) => createRef<API>(), []),
-    [],
-  );
+  // Create refs for each movie
+  const childRefs = useMemo(() => {
+    return Array(m.length)
+      .fill(0)
+      .map((i) => React.createRef<API>());
+  }, [m]);
 
-  const swiped = (direction: Direction, movie: Top250MovieDetail) => {
+  const swiped = (direction: Direction, movie: Movie) => {
     console.log('removing: ' + movie.title);
     setLastDirection(direction);
     alreadyRemoved.push(movie);
   };
 
-  const outOfFrame = (movie: Top250MovieDetail) => {
+  const outOfFrame = (movie: Movie) => {
     console.log(movie.title + ' left the screen!');
-    movieState = movieState.filter((m) => m.id !== movie.id);
-    setMovies(movieState);
+    let newMovieState = movies.filter((m) => m.id !== movie.id);
+    newMovieState = newMovieState.filter((m) => !alreadyRemoved.includes(m));
+    setMovies(newMovieState);
   };
 
   const swipe = (dir: Direction) => {
-    const cardsLeft = movies.filter(
-      ({ id }) => !alreadyRemoved.some((e) => e.id === id),
-    );
-    if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1]; // Find the card object to be removed
-      const index = db.map((movie) => movie).indexOf(toBeRemoved); // Find the index of which to make the reference to
+    const moviesLeft = movies?.filter((m) => !alreadyRemoved.includes(m));
+    if (moviesLeft?.length) {
+      const toBeRemoved = moviesLeft[moviesLeft.length - 1]; // Find the card object to be removed
+      const index = m.map((m) => m).indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       childRefs[index].current?.swipe(dir); // Swipe the card!
     }
@@ -48,7 +47,7 @@ const TinderCards: React.FC<Props> = () => {
     <Box overflow="hidden">
       <Flex flexDir="column" overflow="hidden">
         <Box w="90vw" maxW="260px" h="300px" overflow="hidden">
-          {movies.map((movie, index) => (
+          {movies?.map((movie, index) => (
             <Box position="absolute" key={movie.id}>
               <TinderCard
                 ref={childRefs[index]}

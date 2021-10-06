@@ -2,7 +2,8 @@ import { Button } from '@chakra-ui/button';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import NavBar from '../../components/NavBar/NavBar';
 import { useBreakpointValue } from '@chakra-ui/media-query';
-import { trpc } from '../../server/utils/trpc';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const HomePage = () => {
   const buttonSize = useBreakpointValue({
@@ -10,8 +11,13 @@ const HomePage = () => {
     md: 'md',
     lg: 'lg',
   });
+  const { data: session } = useSession();
+  const router = useRouter();
 
-  const addData = trpc.useMutation('movies.addDummyData');
+  const toDashboard = () => {
+    if (session?.user) router.push('/dashboard');
+  };
+
   return (
     <Box w="100vw" color="white">
       <Box position="fixed" w="100vw" h="80px" top="0" overflow="hidden">
@@ -49,7 +55,9 @@ const HomePage = () => {
           </Text>
           <Box m={3} textAlign="center">
             <Text fontSize={{ base: 'md', md: 'lg', lg: 'xl' }}>
-              Ready to swipe? Get started now.
+              {session?.user
+                ? 'Get back to swiping'
+                : 'Ready to swipe? Get started now.'}
             </Text>
             <Flex justifyContent="center" mt={1}>
               <Button
@@ -57,12 +65,10 @@ const HomePage = () => {
                 color="white"
                 size={buttonSize}
                 variant="red-button"
-                width="66%"
-                onClick={async () => {
-                  await addData.mutateAsync();
-                }}
+                onClick={session ? toDashboard : () => signIn()}
+                isLoading={!session}
               >
-                Get started
+                {session ? 'Go to dashboard' : 'Get started'}
               </Button>
             </Flex>
           </Box>

@@ -1,8 +1,10 @@
 import type { NextPage } from 'next';
-import HomePage from '../page-components/Home/HomePage';
+import { useEffect } from 'react';
+import Dashboard from '../page-components/Dashboard/Dashboard';
+import { trpc } from '../server/utils/trpc';
 
 const Home: NextPage = () => {
-  return <HomePage />;
+  return <Dashboard />;
 };
 
 export default Home;

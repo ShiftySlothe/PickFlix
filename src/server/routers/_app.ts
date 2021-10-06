@@ -1,14 +1,13 @@
-import * as trpc from '@trpc/server';
 import { moviesRouter } from './movies';
-
+import { createRouter } from '../createRouter';
+import { authRouter } from './auth';
 /**
  * Create your application's root router
  * If you want to use SSG, you need export this
  * @link https://trpc.io/docs/ssg
  * @link https://trpc.io/docs/router
  */
-export const appRouter = trpc
-  .router()
+export const appRouter = createRouter()
   /**
    * Add data transformers
    * @link https://trpc.io/docs/data-transformers
@@ -18,6 +17,7 @@ export const appRouter = trpc
    * @link https://trpc.io/docs/error-formatting
    */
   // .formatError(({ shape, error }) => { })
-  .merge('movies.', moviesRouter);
+  .merge('movies.', moviesRouter)
+  .merge('auth.', authRouter);
 
 export type AppRouter = typeof appRouter;

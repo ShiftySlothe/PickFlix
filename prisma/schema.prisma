@@ -1,17 +1,14 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-model Show {
-  id              Int        @id @default(autoincrement())
+model Movie {
+  id              Int              @id @default(autoincrement())
   imDbID          String
   rank            String
   title           String
@@ -21,22 +18,37 @@ model Show {
   crew            String
   imDbRating      String
   imDbRatingCount String
-  UserGroup       UserGroup? @relation(fields: [userGroupId], references: [id])
-  userGroupId     Int?
+  UserGroups      UserGroup[]      @relation(references: [id])
+  UserGroupLikes  userGroupLikes[] @relation(references: [id])
+}
+
+model TVShow {
+  id              Int              @id @default(autoincrement())
+  imDbID          String
+  rank            String
+  title           String
+  fullTitle       String
+  year            String
+  image           String
+  crew            String
+  imDbRating      String
+  imDbRatingCount String
+  UserGroups      UserGroup[]      @relation(references: [id])
+  UserGroupLikes  userGroupLikes[] @relation(references: [id])
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?          @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-
+  userGroups    UserGroup[]      @relation(references: [id])
+  userLikes          userGroupLikes[]
+  newUser       Boolean @default(true)
   @@map(name: "users")
-  UserGroup   UserGroup? @relation(fields: [userGroupId], references: [id])
-  userGroupId Int?
 }
 
 model Account {
@@ -68,8 +80,28 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model UserGroup {
-  id    Int    @id @default(autoincrement())
-  users User[]
-  shows Show[]
+  id             Int              @id @default(autoincrement())
+  movies         Movie[]          @relation(references: [id])
+  tvShows        TVShow[]         @relation(references: [id])
+  users          User[]           @relation(references: [id])
+  userGroupLikes userGroupLikes[]
+}
+
+model userGroupLikes {
+  id          Int       @id @default(autoincrement())
+  userID      String
+  user        User      @relation(fields: [userID], references: [id])
+  userGroupID Int
+  userGroup   UserGroup @relation(fields: [userGroupID], references: [id])
+  movies      Movie[]   @relation(references: [id])
+  tvShows     TVShow[]  @relation(references: [id])
 }
