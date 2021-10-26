@@ -1,32 +1,47 @@
 import { Center } from '@chakra-ui/layout';
 import React from 'react';
-import TinderCards from '../../components/TinderCard/TinderCards';
-import { trpc } from '../../server/utils/trpc';
-import NextError from 'next/error';
+import { Button } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/hooks';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react';
+import { Input } from '@chakra-ui/input';
 
 export default function CenteredTest() {
-  const movieQuery = trpc.useQuery(['movies.get10FromIndex', 1]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { data } = movieQuery;
-
-  // Handle loading/errors
-  if (movieQuery.error) {
-    return (
-      <NextError
-        title={movieQuery.error.message}
-        statusCode={movieQuery.error.data?.httpStatus ?? 500}
-      />
-    );
-  }
-  if (movieQuery.status !== 'success') {
-    return <>Loading...</>;
-  }
-  if (!data) {
-    return <NextError title={'No Movies returned from DB'} statusCode={404} />;
-  }
   return (
-    <Center w="100vw" h="100vh" bg="beige" overflow="hidden">
-      <TinderCards movies={data} />
-    </Center>
+    <>
+      <Center w="100vw" h="100vh" bg="beige" overflow="hidden">
+        <Button ml={1} onClick={onOpen}>
+          Add friends
+        </Button>
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Search for friend</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input placeholder="Sir Rob Stevenson" />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={() => null}>
+              Search
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

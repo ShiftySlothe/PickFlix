@@ -1,4 +1,4 @@
-import prisma from './prisma';
+import prisma from './prisma.js';
 import { top250Movies } from '../../data/top250movies';
 import { top250TV } from '../../data/top250TV';
 

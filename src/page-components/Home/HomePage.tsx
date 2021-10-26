@@ -4,6 +4,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const buttonSize = useBreakpointValue({
@@ -66,9 +67,8 @@ const HomePage = () => {
                 size={buttonSize}
                 variant="red-button"
                 onClick={session ? toDashboard : () => signIn()}
-                isLoading={!session}
               >
-                {session ? 'Go to dashboard' : 'Get started'}
+                {session?.user ? 'Get started' : 'Go to dashboard'}
               </Button>
             </Flex>
           </Box>
