@@ -12,7 +12,7 @@ export const userRouter = createRouter().query('search', {
     const users = await ctx.prisma.user.findMany({
       where: {
         name: {
-          in: input,
+          contains: input,
         },
       },
     });

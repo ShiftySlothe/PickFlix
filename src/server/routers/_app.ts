@@ -20,6 +20,6 @@ export const appRouter = createRouter()
   // .formatError(({ shape, error }) => { })
   .merge('movies.', moviesRouter)
   .merge('auth.', authRouter)
-  .merge('user', userRouter);
+  .merge('users.', userRouter);
 
 export type AppRouter = typeof appRouter;

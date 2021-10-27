@@ -1,7 +1,8 @@
-import prisma from '../lib/prisma.js';
+import prisma from '../lib/prisma';
 import { inferAsyncReturnType } from '@trpc/server/dist/declarations/src/router';
 import * as trpcNext from '@trpc/server/adapters/next';
 import { getSession } from 'next-auth/react';
+import { PrismaClient } from '.prisma/client';
 
 /**
  * Creates context for an incoming request

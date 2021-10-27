@@ -21,7 +21,7 @@
     "db.ts",
     "src/pages/auth/signin.ts",
     "src/pages/api/auth/providers.js",
-    "src/lib/prisma.js"
+    "src/lib/prisma.ts"
   ],
   "exclude": ["node_modules"],
   "types": ["react-tinder-card"]

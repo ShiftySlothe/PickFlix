@@ -23,6 +23,7 @@ export default function TinderCardsPage() {
   if (!data) {
     return <NextError title={'No Movies returned from DB'} statusCode={404} />;
   }
+
   return (
     <Center w="100vw" h="100vh" bg="beige" overflow="hidden">
       <TinderCards movies={data} />

@@ -10,7 +10,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
-import { trpc } from '../../server/utils/trpc';
+import { trpc } from '../server/utils/trpc';
 import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik';
 import {
   FormControl,
@@ -33,7 +33,7 @@ const formInitialValues = {
   userName: '',
 };
 
-export default function CenteredTest() {
+export default function SearchUsersForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [usernameQuery, setUsernameQuery] = useState('');
 

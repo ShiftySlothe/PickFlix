@@ -26,6 +26,7 @@
     "@trpc/react": "^9.8.1-alpha.1",
     "@trpc/server": "^9.8.1-alpha.1",
     "axios": "^0.22.0",
+    "formik": "^2.2.9",
     "framer-motion": "4",
     "next": "11.1.2",
     "next-auth": "^4.0.0-beta.2",
@@ -37,6 +38,7 @@
     "react-tinder-card": "^1.4.0",
     "super-json": "^2.2.0",
     "superjson": "^1.7.5",
+    "yup": "^0.32.11",
     "zod": "^3.9.5",
     "zup": "^0.0.1"
   },
