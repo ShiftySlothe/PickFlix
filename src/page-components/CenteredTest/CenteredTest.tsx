@@ -1,151 +1,50 @@
-import { Box, Center } from '@chakra-ui/layout';
-import React, { useEffect, useState } from 'react';
-import { useDisclosure } from '@chakra-ui/hooks';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react';
-import { trpc } from '../../server/utils/trpc';
-import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik';
-import {
+  Flex,
+  Box,
   FormControl,
   FormLabel,
   FormErrorMessage,
   Input,
+  Checkbox,
+  Stack,
+  Link,
   Button,
+  Heading,
+  Text,
+  useColorModeValue,
+  Skeleton,
 } from '@chakra-ui/react';
-import NextError from 'next/error';
+import { Field, FieldProps, Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { trpc } from '../../server/utils/trpc';
 import * as Yup from 'yup';
-interface FormValues {
-  userName: string;
-}
+import NextError from 'next/error';
+import { UpdateDetailsForm } from '../../components/UpdateDetailsForm1';
 
-const formValidationSchema = Yup.object({
-  userName: Yup.string().required("Can't be empty"),
-});
-
-const formInitialValues = {
-  userName: '',
-};
-
-export default function CenteredTest() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [usernameQuery, setUsernameQuery] = useState('');
-
-  useEffect(() => {
-    console.log(usernameQuery);
-  }, [usernameQuery]);
-
-  const onSubmit = async (
-    values: FormValues,
-    { setSubmitting }: FormikHelpers<FormValues>,
-  ) => {
-    setUsernameQuery(values.userName);
-    setSubmitting(false);
-  };
-
+export default function Home() {
   return (
-    <>
-      <Center w="100vw" h="100vh" bg="beige" overflow="hidden">
-        <Button ml={1} onClick={onOpen}>
-          Add friends
-        </Button>
-      </Center>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Search for friend</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <SearchForm onSubmit={onSubmit} />
-            {!!usernameQuery && <SearchFormResponse username={usernameQuery} />}
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
-
-interface SearchFormProps {
-  onSubmit: (
-    values: FormValues,
-    { setSubmitting }: FormikHelpers<FormValues>,
-  ) => Promise<void>;
-}
-function SearchForm({ onSubmit }: SearchFormProps) {
-  return (
-    <Formik
-      initialValues={formInitialValues}
-      validationSchema={formValidationSchema}
-      onSubmit={onSubmit}
+    <Flex
+      minH={'100vh'}
+      align={'center'}
+      justify={'center'}
+      bg={useColorModeValue('gray.50', 'gray.800')}
     >
-      {(formik) => (
-        <Form onSubmit={formik.handleSubmit}>
-          <Field name="userName">
-            {({ field, form }: FieldProps) => (
-              <FormControl
-                isRequired
-                isInvalid={!!form.errors.userName && !!form.touched.userName}
-              >
-                <FormLabel htmlFor="userName">Username</FormLabel>
-                <Input
-                  {...field}
-                  id="userName"
-                  placeholder="Sir Rob Stevenson"
-                />
-                <FormErrorMessage>{form.errors.userName}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
-          <Button type="submit" mb={3} width="50%">
-            Search
-          </Button>
-        </Form>
-      )}
-    </Formik>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack align={'center'}>
+          <Heading fontSize={'4xl'}>Update your details</Heading>
+          <Text fontSize={'lg'} color={'gray.600'}>
+            to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
+          </Text>
+        </Stack>
+        <Box
+          rounded={'lg'}
+          bg={useColorModeValue('white', 'gray.700')}
+          boxShadow={'lg'}
+          p={8}
+        >
+          <UpdateDetailsForm />
+        </Box>
+      </Stack>
+    </Flex>
   );
-}
-
-interface SearchFormResponseProps {
-  username: string;
-}
-function SearchFormResponse({ username }: SearchFormResponseProps) {
-  const userMatchQuery = trpc.useQuery(['users.search', username]);
-  const userMatches = userMatchQuery.data;
-
-  useEffect(() => {
-    console.log('USER MATCHES');
-    console.log(userMatches);
-  }, [userMatches]);
-
-  // Handle loading/errors
-  if (userMatchQuery.error) {
-    return (
-      <NextError
-        title={userMatchQuery.error.message}
-        statusCode={userMatchQuery.error.data?.httpStatus ?? 500}
-      />
-    );
-  }
-  if (userMatchQuery.status !== 'success') {
-    return <>Loading...</>;
-  }
-  if (!userMatches) {
-    return <NextError title={'No users found'} statusCode={404} />;
-  }
-  if (userMatches.length === 0) {
-    return <Box>No users found</Box>;
-  }
-
-  return <Box>MATCH {userMatches[0].name}</Box>;
 }
