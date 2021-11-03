@@ -20,6 +20,7 @@ import { trpc } from '../../server/utils/trpc';
 import * as Yup from 'yup';
 import NextError from 'next/error';
 import { UpdateDetailsForm } from '../../components/UpdateDetailsForm1';
+import { UpdateDetailsForm2 } from '../../components/UpdateDetailsForm2';
 
 export default function Home() {
   return (
@@ -42,7 +43,7 @@ export default function Home() {
           boxShadow={'lg'}
           p={8}
         >
-          <UpdateDetailsForm />
+          <UpdateDetailsForm2 />
         </Box>
       </Stack>
     </Flex>

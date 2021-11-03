@@ -74,8 +74,10 @@ export function UpdateDetailsForm() {
                   {...field}
                   type="text"
                   placeholder={'NorwegianToBiased'}
-                  onBlur={(e) => {
+                  onChange={(e) => {
+                    form.handleChange(e);
                     setUsernameQ(e.target.value);
+                    form.validateField('username');
                   }}
                 />
                 <FormErrorMessage>{form.errors.username}</FormErrorMessage>
