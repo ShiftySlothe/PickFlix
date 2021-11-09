@@ -99,6 +99,7 @@ model VerificationToken {
 
 model UserGroup {
   id             Int                 @id @default(autoincrement())
+  name           String
   movies         Movie[]             @relation(references: [id])
   tvShows        TVShow[]            @relation(references: [id])
   users          User[]              @relation(references: [id])

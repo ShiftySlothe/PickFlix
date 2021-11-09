@@ -204,7 +204,44 @@ export const userRouter = createRouter()
           message: 'Must be logged in',
         });
       }
+
+      const userGroups = await ctx.prisma.userGroup.findMany({
+        where: {
+          users: {
+            some: {
+              id: {
+                equals: ctx.session.user.id,
+              },
+            },
+          },
+        },
+      });
+
+      return userGroups;
     },
   })
-  .mutation('addUserGroup', {})
+  .mutation('addUserGroup', {
+    input: Yup.object({
+      name: Yup.string().required(),
+      memberIDs: Yup.array().of(Yup.object({ id: Yup.string().required() })),
+    }).required(),
+    async resolve({ ctx, input }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+
+      const newGroup = await ctx.prisma.userGroup.create({
+        data: {
+          name: input.name,
+          users: { connect: input.memberIDs },
+        },
+      });
+
+      return newGroup;
+    },
+  })
   .mutation('inviteUserToGroup', {});
