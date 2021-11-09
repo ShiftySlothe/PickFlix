@@ -139,10 +139,10 @@ model UserGroupRequests {
   id          Int       @id @default(autoincrement())
   sender      User      @relation(fields: [senderId], references: [id], name: "groupRequestRecipient")
   recipient   User      @relation(fields: [recipientId], references: [id], name: "groupRequestSender")
-  userGroup   UserGroup @relation(fields: [userGroupID], references: [id], name: "invites")
+  userGroup   UserGroup @relation(fields: [userGroupId], references: [id], name: "invites")
   accepted    Boolean?
   senderId    String
   recipientId String
-  userGroupID Int
+  userGroupId Int
   sentAt      DateTime  @default(now())
 }

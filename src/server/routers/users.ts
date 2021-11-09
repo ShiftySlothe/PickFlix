@@ -220,7 +220,7 @@ export const userRouter = createRouter()
       return userGroups;
     },
   })
-  .mutation('addUserGroup', {
+  .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),
       memberIDs: Yup.array().of(Yup.object({ id: Yup.string().required() })),
@@ -237,11 +237,48 @@ export const userRouter = createRouter()
       const newGroup = await ctx.prisma.userGroup.create({
         data: {
           name: input.name,
-          users: { connect: input.memberIDs },
+          users: { connect: [{ id: ctx.session.user.id }] },
         },
       });
 
       return newGroup;
     },
   })
-  .mutation('inviteUserToGroup', {});
+  .mutation('inviteUserToGroup', {
+    input: Yup.object({
+      groupID: Yup.number().required(),
+      userID: Yup.string().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+      // Check for existing invite
+      const existingInvite = await ctx.prisma.userGroupRequests.findFirst({
+        where: {
+          senderId: ctx.session.user.id,
+          recipientId: input.userID,
+          userGroupId: input.groupID,
+        },
+      });
+
+      if (existingInvite) {
+        return existingInvite;
+      }
+      // Create new invite
+      const newInvite = await ctx.prisma.userGroupRequests.create({
+        data: {
+          senderId: ctx.session.user.id,
+          recipientId: input.userID,
+          userGroupId: input.groupID,
+          accepted: false,
+        },
+      });
+
+      return newInvite;
+    },
+  });
