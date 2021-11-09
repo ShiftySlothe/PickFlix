@@ -53,8 +53,10 @@ model User {
 
   userId String?
 
-  recievedRequests FriendRequests[] @relation("requestRecipient")
-  sentRequests     FriendRequests[] @relation("requestSender")
+  recievedFriendRequests FriendRequests[]    @relation("friendRequestRecipient")
+  sentFriendRequests     FriendRequests[]    @relation("friendRequestSender")
+  recievedGroupRequests  UserGroupRequests[] @relation("groupRequestRecipient")
+  sentGroupRequests      UserGroupRequests[] @relation("groupRequestSender")
   @@map(name: "users")
 }
 
@@ -96,11 +98,12 @@ model VerificationToken {
 }
 
 model UserGroup {
-  id             Int              @id @default(autoincrement())
-  movies         Movie[]          @relation(references: [id])
-  tvShows        TVShow[]         @relation(references: [id])
-  users          User[]           @relation(references: [id])
+  id             Int                 @id @default(autoincrement())
+  movies         Movie[]             @relation(references: [id])
+  tvShows        TVShow[]            @relation(references: [id])
+  users          User[]              @relation(references: [id])
   userGroupLikes userGroupLikes[]
+  invites        UserGroupRequests[] @relation("invites")
 }
 
 model userGroupLikes {
@@ -123,10 +126,22 @@ model Genre {
 
 model FriendRequests {
   id          Int      @id @default(autoincrement())
-  sender      User     @relation(fields: [senderId], references: [id], name: "requestSender")
-  recipient   User     @relation(fields: [recipientId], references: [id], name: "requestRecipient")
+  sender      User     @relation(fields: [senderId], references: [id], name: "friendRequestRecipient")
+  recipient   User     @relation(fields: [recipientId], references: [id], name: "friendRequestSender")
   accepted    Boolean?
   senderId    String
   recipientId String
   sentAt      DateTime @default(now())
+}
+
+model UserGroupRequests {
+  id          Int       @id @default(autoincrement())
+  sender      User      @relation(fields: [senderId], references: [id], name: "groupRequestRecipient")
+  recipient   User      @relation(fields: [recipientId], references: [id], name: "groupRequestSender")
+  userGroup   UserGroup @relation(fields: [userGroupID], references: [id], name: "invites")
+  accepted    Boolean?
+  senderId    String
+  recipientId String
+  userGroupID Int
+  sentAt      DateTime  @default(now())
 }

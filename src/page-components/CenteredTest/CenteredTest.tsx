@@ -1,26 +1,14 @@
 import {
   Flex,
   Box,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  Checkbox,
   Stack,
   Link,
-  Button,
   Heading,
   Text,
   useColorModeValue,
-  Skeleton,
 } from '@chakra-ui/react';
-import { Field, FieldProps, Form, Formik } from 'formik';
-import { useEffect, useState } from 'react';
-import { trpc } from '../../server/utils/trpc';
-import * as Yup from 'yup';
-import NextError from 'next/error';
-import { UpdateDetailsForm } from '../../components/UpdateDetailsForm1';
-import { UpdateDetailsForm2 } from '../../components/UpdateDetailsForm2';
+import { AddFriendsForm } from '../../components/SignUpFlowForms/AddFriendsForm';
+import { CreateGroupsForm } from '../../components/SignUpFlowForms/CreateGroupsForm';
 
 export default function Home() {
   return (
@@ -43,7 +31,7 @@ export default function Home() {
           boxShadow={'lg'}
           p={8}
         >
-          <UpdateDetailsForm2 />
+          <CreateGroupsForm />
         </Box>
       </Stack>
     </Flex>

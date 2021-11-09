@@ -1,6 +1,6 @@
 import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
-import { trpc } from '../server/utils/trpc';
+import { trpc } from '../../server/utils/trpc';
 import * as Yup from 'yup';
 import {
   FormControl,
@@ -10,11 +10,9 @@ import {
 import { Input } from '@chakra-ui/input';
 import { Box } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
-import NextError from 'next/error';
-import { Skeleton } from '@chakra-ui/skeleton';
-import { Checkbox } from '@chakra-ui/checkbox';
+import { GenresSelection } from './components/GenresSelection';
 
-export function UpdateDetailsForm() {
+export function UsernameGenresForm() {
   // Set on username input blur, used in trpc query
   const [usernameQ, setUsernameQ] = useState('');
   const userMatchQuery = trpc.useQuery(['users.usernameExists', usernameQ]);
@@ -32,7 +30,6 @@ export function UpdateDetailsForm() {
         const reformattedGenres = values.genres.map((g) => ({
           id: g,
         }));
-
         genresMutation.mutate(reformattedGenres);
       }}
       validationSchema={Yup.object({
@@ -94,46 +91,5 @@ export function UpdateDetailsForm() {
         </Form>
       )}
     </Formik>
-  );
-}
-
-function GenresSelection() {
-  const genreQuery = trpc.useQuery(['movies.getAllGenres']);
-  return (
-    <>
-      {genreQuery.error && (
-        <NextError
-          title={genreQuery.error.message}
-          statusCode={genreQuery.error.data?.httpStatus || 500}
-        />
-      )}
-      <Skeleton isLoaded={genreQuery.isSuccess}>
-        {genreQuery.data ? (
-          genreQuery.data.map((genre) => (
-            <Field name="genres" key={genre.id}>
-              {({ field, form }: FieldProps) => (
-                <FormControl
-                  id={genre.name}
-                  isInvalid={!!form.errors.genre && !!form.touched.genres}
-                >
-                  <Box
-                    borderRadius="10%"
-                    border="2px"
-                    borderColor="gray.200"
-                    m={1}
-                  >
-                    <Checkbox p={2} {...field} value={genre.id}>
-                      {genre.name}
-                    </Checkbox>
-                  </Box>
-                </FormControl>
-              )}
-            </Field>
-          ))
-        ) : (
-          <NextError title={'No genres found'} statusCode={404} />
-        )}
-      </Skeleton>
-    </>
   );
 }

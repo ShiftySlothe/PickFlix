@@ -2,9 +2,46 @@ CURRENT:
 
 ADDING GROUPS, ADDDED USER SEARCH ROUTER, WORKIGN ON USER SEARCH FUNCTIONALITY.
 
+FINISH THE FUCKING FROM
+1) Ensure that there can only be a single friend request 
+2) Set up the endpoint to send user data from the friend request not just the USER ID 
+3) Finish groups flow
+
+
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
 2) ADD CUSTOM DOMAIN FROM GODADDY - DONE
 3) ADD NEW USER SIGN UP FLOW  
 4) ADD GROUPS
 5) GET LIKES WORKING 
 6) INTERGRATE TMDB CATEGORIES ETC
+
+
+Create groups -> Just TWO party groups for now?
+Endpoint requires -> Query - List of all sent friend request && 
+                    Mutation -> Create new group with given name
+                    Mutation -> Invite user(ID) to group with given name OR ID
+
+Then home screen, three panes, left pane is user profile & settings, middle pane is swiping, right pane is groups & chats. 
+
+Left pane 
+Endpoint requries -> Query GET USER DETAILS 
+                    Update -> Update user details (do we update individual details or details as a whole, which details do we update)
+                    Update -> Update settings... at this stage what settings will a user have (dark mode?)
+                    Update -> Update preferences (e.g. liked movies)
+                    Update -> Delete account
+
+Middle pane 
+                    Query -> Get currently swiping in (to show correct panes)
+                    Mutation -> Update currently swiping in (when a user changes groups)
+                    Query -> Get list of movies/TV shows by preferences (e.g. only select movies/TV shows the user might like)
+                    Mutation -> User has liked a show
+                    Mutation -> User has disliked a show
+                    Query -> Preload shows which other member of the group has liked for fast notifications (see TRPC examples for this)
+
+
+Right pane 
+                    Query -> Get all groups 
+                    Query -> Get all friends
+                    TBC WEBSOCKETS for chat FUNCTIONALITY
+                    Mutation -> Remove from group 
+                    Query -> Get all group likes 

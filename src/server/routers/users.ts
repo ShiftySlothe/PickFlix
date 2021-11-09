@@ -76,10 +76,11 @@ export const userRouter = createRouter()
     },
   })
   .mutation('addLikedGenres', {
-    input: Yup.array().of(Yup.object().shape({ id: Yup.number().required() })),
+    input: Yup.array().of(Yup.object({ id: Yup.number().required() })),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
 
+      // Add array of genreID's to user preferences
       const user = await ctx.prisma.user.update({
         where: {
           id: ctx?.session?.user.id,
@@ -97,6 +98,7 @@ export const userRouter = createRouter()
   .mutation('sendFriendRequest', {
     input: Yup.object({ id: Yup.string().required() }).required(),
     async resolve({ ctx, input }) {
+      // Check log in
       if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -104,6 +106,7 @@ export const userRouter = createRouter()
         });
       }
 
+      // Check data
       if (!input || !input.id) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
@@ -111,7 +114,8 @@ export const userRouter = createRouter()
         });
       }
 
-      const existingRequest = ctx.prisma.friendRequests.findFirst({
+      // Check for duplicate
+      const existingRequest = await ctx.prisma.friendRequests.findFirst({
         where: {
           senderId: ctx.session.user.id,
           recipientId: input.id,
@@ -121,21 +125,21 @@ export const userRouter = createRouter()
         return existingRequest;
       }
 
-      const request = ctx.prisma.friendRequests.create({
+      // Persist request
+      const request = await ctx.prisma.friendRequests.create({
         data: {
           senderId: ctx.session.user.id,
           recipientId: input.id,
           accepted: false,
         },
       });
-      console.log('NEW');
-      console.log(request);
       return request;
     },
   })
-  .query('hasExistingFriendRequest', {
+  .query('checkExistingFriendRequestByID', {
     input: Yup.object({ id: Yup.string().required() }).required(),
     async resolve({ ctx, input }) {
+      // Ensure login
       if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -143,9 +147,11 @@ export const userRouter = createRouter()
         });
       }
 
+      // Check for blank string (on mount there is no query)
       if (!input) {
         return noQuery;
       }
+
       const existingRequest = await ctx.prisma.friendRequests.findFirst({
         where: {
           senderId: ctx.session.user.id,
@@ -159,4 +165,46 @@ export const userRouter = createRouter()
 
       return noData;
     },
-  });
+  })
+  .query('getUserFriendRequests', {
+    async resolve({ ctx }) {
+      //Ensure login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+
+      // Find user details from friend requests
+      const friendRequests = await ctx.prisma.friendRequests.findMany({
+        where: {
+          senderId: ctx.session.user.id,
+        },
+        select: {
+          recipient: {
+            select: {
+              id: true,
+              userName: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      return friendRequests;
+    },
+  })
+  .query('getUserGroups', {
+    async resolve({ ctx }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+    },
+  })
+  .mutation('addUserGroup', {})
+  .mutation('inviteUserToGroup', {});
