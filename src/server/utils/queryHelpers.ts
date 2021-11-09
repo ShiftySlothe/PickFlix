@@ -10,10 +10,10 @@ export const noQuery: DataCheck = {
 
 export const dataFound: DataCheck = {
   noQuery: false,
-  found: false,
+  found: true,
 };
 
 export const noData: DataCheck = {
   noQuery: false,
-  found: true,
+  found: false,
 };

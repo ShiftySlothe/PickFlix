@@ -6,8 +6,13 @@ import NextError from 'next/error';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
 import { AddFriendField } from './components/AddFriendField';
+import { DetailsFormProgress } from '../../lib/enums';
 
-export function AddFriendsForm() {
+interface FormProps {
+  setFormProgress: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export function AddFriendsForm({ setFormProgress }: FormProps) {
   const [usernameQ, setUsernameQ] = useState('');
   const handleChange = (e: any) => setUsernameQ(e.target.value);
   const userMatchQuery = trpc.useQuery(['users.search', usernameQ]);
@@ -50,7 +55,12 @@ export function AddFriendsForm() {
             )}
           </Flex>
         )}
-        <Button type="submit">Next</Button>
+        <Button
+          type="submit"
+          onClick={() => setFormProgress(DetailsFormProgress.Third)}
+        >
+          Next
+        </Button>
       </Box>
     </>
   );

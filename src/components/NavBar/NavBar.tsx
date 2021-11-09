@@ -13,8 +13,6 @@ export default function NavBar() {
   });
 
   const signInTemp = () => {
-    console.log('CALLED');
-    console.log(`${process.env.BASE_URL}/dashboard`);
     signIn('google', {
       callbackUrl: `${process.env.BASE_URL}/dashboard`,
       redirect: true,

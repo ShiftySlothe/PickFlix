@@ -66,9 +66,17 @@ const HomePage = () => {
                 color="white"
                 size={buttonSize}
                 variant="red-button"
-                onClick={session ? toDashboard : () => signIn()}
+                onClick={
+                  session
+                    ? toDashboard
+                    : () =>
+                        signIn('google', {
+                          callbackUrl: `${process.env.BASE_URL}/dashboard`,
+                          redirect: true,
+                        })
+                }
               >
-                {session?.user ? 'Get started' : 'Go to dashboard'}
+                {session?.user ? 'Go to dashboard' : 'Get started'}
               </Button>
             </Flex>
           </Box>

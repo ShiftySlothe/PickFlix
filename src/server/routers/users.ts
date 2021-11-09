@@ -57,6 +57,22 @@ export const userRouter = createRouter()
       return noData;
     },
   })
+  .query('getUsername', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+
+      const username = ctx.prisma.user.findFirst({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        select: {
+          userName: true,
+        },
+      });
+
+      return username;
+    },
+  })
   .mutation('updateUsername', {
     input: Yup.string().required(),
     // TO DO check if username is not taken
@@ -237,6 +253,7 @@ export const userRouter = createRouter()
         data: {
           name: input.name,
           users: { connect: [{ id: ctx.session.user.id }] },
+          groupOwner: { connect: { id: ctx.session.user.id } },
         },
       });
 
@@ -279,5 +296,101 @@ export const userRouter = createRouter()
       });
 
       return newInvite;
+    },
+  })
+  .query('getGroupInvites', {
+    input: Yup.object({
+      groupID: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+      // Check for existing invite
+      const existingInvites = await ctx.prisma.userGroupRequests.findMany({
+        where: {
+          senderId: ctx.session.user.id,
+          userGroupId: input.groupID,
+        },
+        select: {
+          id: true,
+          accepted: true,
+          recipient: {
+            select: {
+              id: true,
+              userName: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      return existingInvites;
+    },
+  })
+  .mutation('deleteGroupInvite', {
+    input: Yup.object({
+      inviteID: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+
+      const deletion = await ctx.prisma.userGroupRequests.delete({
+        where: {
+          id: input.inviteID,
+        },
+      });
+      // Check for existing invite
+      return deletion;
+    },
+  })
+  .query('isNewUser', {
+    async resolve({ ctx }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+
+      const newUser = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx.session.user.id,
+        },
+        select: { newUser: true },
+      });
+      // Check for existing invite
+      return newUser;
+    },
+  })
+  .mutation('disableNewUser', {
+    async resolve({ ctx }) {
+      // Check user login
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Must be logged in',
+        });
+      }
+
+      const newUser = await ctx.prisma.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: { newUser: false },
+      });
+      // Check for existing invite
+      return newUser;
     },
   });

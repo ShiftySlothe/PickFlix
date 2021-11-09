@@ -8,7 +8,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { trpc } from '../../server/utils/trpc';
 import NextError from 'next/error';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
-import { Button } from '@chakra-ui/button';
+import { Button, IconButton } from '@chakra-ui/button';
 import { AddFriendField } from './components/AddFriendField';
 import { useDisclosure } from '@chakra-ui/hooks';
 import {
@@ -24,13 +24,19 @@ import { Field, FieldProps, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useToast } from '@chakra-ui/toast';
 import { UserGroup } from '.prisma/client';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { UseQueryResult } from 'react-query';
+import { DetailsFormProgress } from '../../lib/enums';
 // Create new group modal
 // Add friends to group
 // Show new group with avatars on group form
 // On submit go to dashboard
 
-export function GroupsForm() {
+interface FormProps {
+  setFormProgress: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export function GroupsForm({ setFormProgress }: FormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userGroupsQuery = trpc.useQuery(['users.getUserGroups']);
   const userGroups = userGroupsQuery.data;
@@ -41,9 +47,17 @@ export function GroupsForm() {
       {userGroupsQuery.isSuccess &&
         userGroups &&
         userGroups.length > 0 &&
-        userGroups.map((group) => <Box key={group.id}>{group.name}</Box>)}
+        userGroups.map((group) => (
+          <UpdateGroupForm
+            group={group}
+            key={group.id}
+            userGroupsQuery={userGroupsQuery}
+          />
+        ))}
       <Button onClick={onOpen}>Add new group</Button>
-
+      <Button onClick={() => setFormProgress(DetailsFormProgress.Final)}>
+        Next
+      </Button>
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -60,7 +74,14 @@ export function GroupsForm() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                onClose();
+                userGroupsQuery.refetch();
+              }}
+            >
               Close
             </Button>
           </ModalFooter>
@@ -228,7 +249,13 @@ function AddFriendToGroupField({
     setIsAddingUser(true);
     const groupReqObj = { groupID: group.id, userID: recipient.id };
     await friendReqMutation.mutateAsync(groupReqObj);
-    setAddedUsers((addedUsers) => [...addedUsers, recipient]);
+    setAddedUsers((addedUsers) => {
+      if (addedUsers.includes(recipient)) {
+        return addedUsers;
+      } else {
+        return [...addedUsers, recipient];
+      }
+    });
     toast({
       title: 'Group request sent.',
       status: 'success',
@@ -256,7 +283,86 @@ function AddFriendToGroupField({
 
 interface UpdateGroupFormProps {
   group: UserGroup;
+  userGroupsQuery: UseQueryResult;
 }
-function UpdateGroupForm({ group }: UpdateGroupFormProps) {
-  return <div>Hello!</div>;
+function UpdateGroupForm({ group, userGroupsQuery }: UpdateGroupFormProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Flex
+        width="100%"
+        borderWidth="1px"
+        borderColor="grey"
+        borderRadius="8px"
+        my={1}
+        alignItems="center"
+        justifyContent="space-between"
+        px={2}
+      >
+        <Text>{group.name}</Text>
+        <IconButton
+          bg="white"
+          aria-label="Group settings"
+          icon={<HamburgerIcon bg="white" />}
+          onClick={onOpen}
+        />
+      </Flex>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          userGroupsQuery.refetch();
+        }}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Group</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <UpdateGroupModal group={group} />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
+interface UpdateGroupModalProps {
+  group: UserGroup;
+}
+function UpdateGroupModal({ group }: UpdateGroupModalProps) {
+  const groupInvitesQuery = trpc.useQuery([
+    'users.getGroupInvites',
+    { groupID: group.id },
+  ]);
+  const groupInvites = groupInvitesQuery.data;
+  // TODO implement form
+  return (
+    <>
+      <Heading>!Not implemented!</Heading>
+      <FormLabel>Update name</FormLabel>
+      <Input placeholder={group.name} />
+      <Button>Update</Button>
+      <FormLabel>Current friends</FormLabel>
+      {groupInvitesQuery.isLoading && <Text>Loading group members...</Text>}
+      {groupInvites?.map((invite) => (
+        <Flex
+          key={invite.id}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Text>{invite.recipient.userName}</Text>
+          <Text>Status: {invite.accepted ? 'Accepted' : 'Pending'}</Text>
+          <IconButton aria-label="Remove friend" icon={<CloseIcon />} />
+        </Flex>
+      ))}
+      <AddFriendsToGroupForm group={group} />
+    </>
+  );
 }

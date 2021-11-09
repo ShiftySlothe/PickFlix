@@ -3,9 +3,7 @@ CURRENT:
 ADDING GROUPS, ADDDED USER SEARCH ROUTER, WORKIGN ON USER SEARCH FUNCTIONALITY.
 
 FINISH THE FUCKING FROM
-1) Ensure that there can only be a single friend request 
-2) Set up the endpoint to send user data from the friend request not just the USER ID 
-3) Finish groups flow
+1) Finish update groups form
 
 
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
@@ -16,10 +14,7 @@ FINISH THE FUCKING FROM
 6) INTERGRATE TMDB CATEGORIES ETC
 
 
-Create groups -> Just TWO party groups for now?
-Endpoint requires -> Query - List of all sent friend request && 
-                    Mutation -> Create new group with given name
-                    Mutation -> Invite user(ID) to group with given name OR ID
+Create groups ->
 
 Then home screen, three panes, left pane is user profile & settings, middle pane is swiping, right pane is groups & chats. 
 
@@ -45,3 +40,11 @@ Right pane
                     TBC WEBSOCKETS for chat FUNCTIONALITY
                     Mutation -> Remove from group 
                     Query -> Get all group likes 
+
+
+BUGS: 
+
+    Sign up flow:
+        User can send themselves a friend request -> remove user from list
+        Genres appear in random order -> filter by alpha
+        User cannot update username to their own username 

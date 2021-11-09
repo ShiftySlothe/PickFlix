@@ -1,5 +1,5 @@
 import { Field, FieldProps, Form, Formik } from 'formik';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { trpc } from '../../server/utils/trpc';
 import * as Yup from 'yup';
 import {
@@ -11,10 +11,15 @@ import { Input } from '@chakra-ui/input';
 import { Box } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
 import { GenresSelection } from './components/GenresSelection';
+import { DetailsFormProgress } from '../../lib/enums';
 
-export function UsernameGenresForm() {
+interface FormProps {
+  setFormProgress: React.Dispatch<React.SetStateAction<number>>;
+}
+export function UsernameGenresForm({ setFormProgress }: FormProps) {
   // Set on username input blur, used in trpc query
   const [usernameQ, setUsernameQ] = useState('');
+  const usernameQuery = trpc.useQuery(['users.getUsername']);
   const userMatchQuery = trpc.useQuery(['users.usernameExists', usernameQ]);
 
   const usernameMutation = trpc.useMutation('users.updateUsername');
@@ -25,12 +30,13 @@ export function UsernameGenresForm() {
         username: '',
         genres: [] as number[],
       }}
-      onSubmit={(values) => {
-        usernameMutation.mutate(values.username);
+      onSubmit={async (values) => {
+        await usernameMutation.mutateAsync(values.username);
         const reformattedGenres = values.genres.map((g) => ({
           id: g,
         }));
-        genresMutation.mutate(reformattedGenres);
+        await genresMutation.mutateAsync(reformattedGenres);
+        setFormProgress(DetailsFormProgress.Second);
       }}
       validationSchema={Yup.object({
         username: Yup.string()
@@ -70,12 +76,17 @@ export function UsernameGenresForm() {
                 <Input
                   {...field}
                   type="text"
-                  placeholder={'NorwegianToBiased'}
+                  placeholder={
+                    usernameQuery.data && usernameQuery.data.userName
+                      ? usernameQuery.data.userName
+                      : 'Username...'
+                  }
                   onChange={(e) => {
                     form.handleChange(e);
                     setUsernameQ(e.target.value);
                     form.validateField('username');
                   }}
+                  disabled={usernameQuery.isLoading}
                 />
                 <FormErrorMessage>{form.errors.username}</FormErrorMessage>
               </FormControl>
@@ -87,7 +98,7 @@ export function UsernameGenresForm() {
           <Box h={'200px'} overflowY={'scroll'}>
             <GenresSelection />
           </Box>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Next</Button>
         </Form>
       )}
     </Formik>

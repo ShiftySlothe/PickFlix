@@ -46,7 +46,7 @@ model User {
   image          String?
   accounts       Account[]
   sessions       Session[]
-  userGroups     UserGroup[]      @relation(references: [id])
+  userGroups     UserGroup[]      @relation(references: [id], name: "groupMembers")
   userLikes      userGroupLikes[]
   newUser        Boolean          @default(true)
   preferedGenres Genre[]
@@ -58,6 +58,7 @@ model User {
   recievedGroupRequests  UserGroupRequests[] @relation("groupRequestRecipient")
   sentGroupRequests      UserGroupRequests[] @relation("groupRequestSender")
   @@map(name: "users")
+  UserGroup UserGroup[]
 }
 
 model Account {
@@ -102,8 +103,10 @@ model UserGroup {
   name           String
   movies         Movie[]             @relation(references: [id])
   tvShows        TVShow[]            @relation(references: [id])
-  users          User[]              @relation(references: [id])
+  users          User[]              @relation(references: [id], name: "groupMembers")
   userGroupLikes userGroupLikes[]
+  groupOwner     User                @relation(fields: [groupOwnerID], references: [id])
+  groupOwnerID   String
   invites        UserGroupRequests[] @relation("invites")
 }
 
