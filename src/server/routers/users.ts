@@ -223,7 +223,6 @@ export const userRouter = createRouter()
   .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),
-      memberIDs: Yup.array().of(Yup.object({ id: Yup.string().required() })),
     }).required(),
     async resolve({ ctx, input }) {
       // Check user login

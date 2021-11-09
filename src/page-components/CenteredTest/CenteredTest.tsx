@@ -8,7 +8,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { AddFriendsForm } from '../../components/SignUpFlowForms/AddFriendsForm';
-import { CreateGroupsForm } from '../../components/SignUpFlowForms/CreateGroupsForm';
+import { GroupsForm } from '../../components/SignUpFlowForms/CreateGroupsForm';
 
 export default function Home() {
   return (
@@ -31,7 +31,7 @@ export default function Home() {
           boxShadow={'lg'}
           p={8}
         >
-          <CreateGroupsForm />
+          <GroupsForm />
         </Box>
       </Stack>
     </Flex>
