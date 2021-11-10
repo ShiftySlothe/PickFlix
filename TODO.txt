@@ -43,4 +43,3 @@ BUGS:
     Sign up flow:
         User can send themselves a friend request -> remove user from list
         Genres appear in random order -> filter by alpha
-        User cannot update username to their own username 

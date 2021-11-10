@@ -25,6 +25,9 @@ export const userRouter = createRouter()
           userName: {
             contains: input,
           },
+          NOT: {
+            id: ctx?.session?.user.id,
+          },
         },
       });
       if (!users) {
