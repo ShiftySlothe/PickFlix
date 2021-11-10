@@ -17,10 +17,13 @@ interface FormProps {
   setFormProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 export function UsernameGenresForm({ setFormProgress }: FormProps) {
-  // Set on username input blur, used in trpc query
+  // Set on username input change, used in trpc query
   const [usernameQ, setUsernameQ] = useState('');
   const usernameQuery = trpc.useQuery(['users.getUsername']);
-  const userMatchQuery = trpc.useQuery(['users.usernameExists', usernameQ]);
+  const userMatchQuery = trpc.useQuery([
+    'users.usernameOwnedElsewhere',
+    usernameQ,
+  ]);
 
   const usernameMutation = trpc.useMutation('users.updateUsername');
   const genresMutation = trpc.useMutation('users.addLikedGenres');

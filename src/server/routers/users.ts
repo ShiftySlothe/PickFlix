@@ -36,17 +36,22 @@ export const userRouter = createRouter()
       return users;
     },
   })
-  .query('usernameExists', {
+  .query('usernameOwnedElsewhere', {
     input: z.string({
       invalid_type_error: 'Must be a string',
     }),
     async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
       if (!input) {
         return noQuery;
       }
       const user = await ctx.prisma.user.findFirst({
         where: {
           userName: input,
+          NOT: {
+            id: ctx?.session?.user.id,
+          },
         },
       });
 
