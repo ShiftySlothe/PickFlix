@@ -2,60 +2,62 @@ import { createRouter } from '../createRouter';
 import * as Yup from 'yup';
 import { Context } from '../context';
 import { TRPCError } from '@trpc/server';
-import { checkLoggedIn } from '../utils/checkLoggedIn';
+import { checkLoggedIn } from '../utils/queryHelpers';
 
-export const userRouter = createRouter().query('findManyByUsername', {
-  input: Yup.object({
-    usernameQuery: Yup.string().required(),
-  }),
-  async resolve({ ctx, input }) {
-    const users = await ctx.prisma.user.findMany({
-      where: {
-        userName: {
-          contains: input,
+export const userRouter = createRouter()
+  .query('findManyByUsername', {
+    input: Yup.object({
+      usernameQuery: Yup.string().required(),
+    }),
+    async resolve({ ctx, input }) {
+      const users = await ctx.prisma.user.findMany({
+        where: {
+          userName: {
+            contains: input.usernameQuery,
+          },
         },
-      },
-    });
-    if (!users) {
-      return [];
-    }
-    return users;
-  },
-})
+      });
+      if (!users) {
+        return [];
+      }
+      return users;
+    },
+  })
   .query('getUserFromSession', {
-    async resolve({ctx}){
+    async resolve({ ctx }) {
       checkLoggedIn(ctx);
       const user = await ctx.prisma.user.findFirst({
         where: {
           id: ctx?.session?.user?.id,
-        }
-      })
+        },
+      });
 
-      if(!user){
-        throw new TRPCError({ 
+      if (!user) {
+        throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'No user found',
         });
       }
 
       return user;
-    }
-  }).query('usernameExists', {
+    },
+  })
+  .query('usernameExists', {
     input: Yup.object({
       username: Yup.string().required(),
+    }),
 
-    async resolve({ ctx, input }){
-      const exists =  await ctx.prisma.user.findFirst({
+    async resolve({ ctx, input }) {
+      const exists = await ctx.prisma.user.findFirst({
         where: {
           userName: input.username,
         },
-      })
+      });
 
-      return !!exist
-    }
-    })
-  }).query('getUsernameFromSession', {
-  
+      return !!exists;
+    },
+  })
+  .query('getUsernameFromSession', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
 
@@ -70,7 +72,8 @@ export const userRouter = createRouter().query('findManyByUsername', {
 
       return username;
     },
-  }).query('isNewUser', {
+  })
+  .query('isNewUser', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
 
@@ -81,12 +84,14 @@ export const userRouter = createRouter().query('findManyByUsername', {
         select: { newUser: true },
       });
       return newUser;
-  }}).query('likesGenre', {
+    },
+  })
+  .query('likesGenre', {
     // TODO improve yup schema
-    input: Yup.object({ 
+    input: Yup.object({
       genreID: Yup.number().required(),
     }),
-    async resolve({ctx, input}){
+    async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
 
       const likesGenre = await ctx.prisma.user.findFirst({
@@ -94,28 +99,29 @@ export const userRouter = createRouter().query('findManyByUsername', {
           id: ctx?.session?.user.id,
           preferedGenres: {
             some: {
-              genreID: input.id,
-            }
-          } 
+              genreID: input.genreID,
+            },
+          },
         },
-      })
+      });
 
       return !!likesGenre;
-    }
-  }).mutation('updateUser', {
+    },
+  })
+  .mutation('updateUser', {
     // Need to model user object
 
-    resolve({ctx}){
+    resolve({ ctx }) {
       throw new TRPCError({
-      code: 'NOT_SUPPORTED_ERR',
-      message: 'Not implemented'
-    })
-  },
+        code: 'METHOD_NOT_SUPPORTED',
+        message: 'Not implemented',
+      });
+    },
   })
-  .mutation('updateUsername',{
+  .mutation('updateUsername', {
     input: Yup.object({ username: Yup.string().required() }).required(),
 
-    async resolve({ctx, input}) {
+    async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
       // todo update to check first
       const user = await ctx.prisma.user.update({
@@ -123,45 +129,54 @@ export const userRouter = createRouter().query('findManyByUsername', {
           id: ctx?.session?.user.id,
         },
         data: {
-          userName: input,
+          userName: input.username,
         },
       });
 
       return user;
-    }
-  }).mutation('updateName',{
+    },
+  })
+  .mutation('updateName', {
     input: Yup.object({ name: Yup.string().required() }).required(),
 
-    async resolve({ctx, input}){
+    async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
       const user = await ctx.prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: ctx?.session?.user.id,
         },
         data: {
           name: input.name,
         },
-      })
+      });
 
       return user;
-    } 
-  }).mutation('updateEmail', {
-  input: Yup.object({ email: Yup.string().email().required() }).required(),
+    },
+  })
+  .mutation('updateEmail', {
+    input: Yup.object({ email: Yup.string().email().required() }).required(),
 
-  async resolve({ctx, input}){
-    checkLoggedIn(ctx);
-    const user = await ctx.prisma.user.update({
-      where: {
-        id: ctx.session.user.id,
-      },
-      data: {
-        email: input.email,
-      },
-    })
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          email: input.email,
+        },
+      });
 
-    return user;
-  }}).mutation('updateImage', { //unsure how to do this
-  }).mutation('disableNewUser', {
+      return user;
+    },
+  })
+  .mutation('updateImage', {
+    //unsure how to do this
+    async resolve({ ctx }) {
+      throw new TRPCError({ code: 'METHOD_NOT_SUPPORTED' });
+    },
+  })
+  .mutation('disableNewUser', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
 
@@ -171,10 +186,10 @@ export const userRouter = createRouter().query('findManyByUsername', {
         },
         data: { newUser: false },
       });
-      // Check for existing invite
       return newUser;
     },
-  }).mutation('addLikedGenres', {
+  })
+  .mutation('addLikedGenres', {
     input: Yup.array().of(Yup.object({ id: Yup.number().required() })),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
@@ -193,17 +208,4 @@ export const userRouter = createRouter().query('findManyByUsername', {
 
       return user;
     },
-  }).mutation('disableNewUser', {
-    async resolve({ ctx }) {
-      checkLoggedIn(ctx);
-
-      const newUser = await ctx.prisma.user.update({
-        where: {
-          id: ctx?.session?.user?.id,
-        },
-        data: { newUser: false },
-      });
-      // Check for existing invite
-      return newUser;
-    },
-  }); 
+  });
