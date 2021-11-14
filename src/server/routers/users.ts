@@ -6,8 +6,7 @@ import { Context } from '../context';
 import { noQuery, dataFound, noData } from '../utils/queryHelpers';
 
 const checkLoggedIn = (ctx: Context) => {
-  if (!ctx.session || !ctx.session.user) {
-    console.log(ctx.session);
+  if (!ctx.session || !ctx.session.user) 
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Must be logged in',
@@ -26,9 +25,6 @@ export const userRouter = createRouter()
           userName: {
             contains: input,
           },
-          NOT: {
-            id: ctx?.session?.user.id,
-          },
         },
       });
       if (!users) {
@@ -40,7 +36,7 @@ export const userRouter = createRouter()
       return users;
     },
   })
-  .query('usernameOwnedElsewhere', {
+  .query('usernameExists', {
     input: z.string({
       invalid_type_error: 'Must be a string',
     }),
@@ -51,9 +47,6 @@ export const userRouter = createRouter()
       const user = await ctx.prisma.user.findFirst({
         where: {
           userName: input,
-          NOT: {
-            id: ctx?.session?.user.id,
-          },
         },
       });
 
@@ -363,17 +356,11 @@ export const userRouter = createRouter()
   })
   .query('isNewUser', {
     async resolve({ ctx }) {
-      // Check user login
-      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Must be logged in',
-        });
-      }
+      checkLoggedIn(ctx);
 
       const newUser = await ctx.prisma.user.findFirst({
         where: {
-          id: ctx.session.user.id,
+          id: ctx?.session?.user?.id,
         },
         select: { newUser: true },
       });
@@ -383,17 +370,11 @@ export const userRouter = createRouter()
   })
   .mutation('disableNewUser', {
     async resolve({ ctx }) {
-      // Check user login
-      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Must be logged in',
-        });
-      }
+      checkLoggedIn(ctx);
 
       const newUser = await ctx.prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: ctx?.session?.user?.id,
         },
         data: { newUser: false },
       });

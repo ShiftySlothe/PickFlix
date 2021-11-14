@@ -1,16 +1,20 @@
 CURRENT:
 
+Prisma migrate as added new options, usergroup owner changed to array malformatted
+
 FINISH THE FUCKING FROM
-1) Review code for user groups form
+1) Finish update groups form
 
 
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
+2) ADD CUSTOM DOMAIN FROM GODADDY - DONE
+3) ADD NEW USER SIGN UP FLOW  
 4) ADD GROUPS
 5) GET LIKES WORKING 
 6) INTERGRATE TMDB CATEGORIES ETC
-7) CONSIDER SSR/CSR/STATIC PAGES 
-8) ADD ANIMATION WITH FRAMER MOTION
-9) SPLIT OUT ROUTERS
+-
+
+Create groups ->
 
 Then home screen, three panes, left pane is user profile & settings, middle pane is swiping, right pane is groups & chats. 
 
@@ -41,4 +45,9 @@ Right pane
 BUGS: 
 
     Sign up flow:
-        
+        User can send themselves a friend request -> remove user from list
+        Genres appear in random order -> filter by alpha
+        User cannot update username to their own username
+
+
+    Schema change all ID to Id

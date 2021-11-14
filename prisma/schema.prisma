@@ -39,7 +39,7 @@ model TVShow {
 
 model User {
   id             String           @id @default(cuid())
-  userName       String?
+  userName       String? @unique
   name           String?
   email          String?          @unique
   emailVerified  DateTime?
@@ -105,8 +105,8 @@ model UserGroup {
   tvShows        TVShow[]            @relation(references: [id])
   users          User[]              @relation(references: [id], name: "groupMembers")
   userGroupLikes userGroupLikes[]
-  groupOwner     User                @relation(fields: [groupOwnerID], references: [id])
-  groupOwnerID   String
+  groupOwner     User[]                @relation(fields: [groupOwnerID], references: [id])
+  groupOwnerId   String
   invites        UserGroupRequests[] @relation("invites")
 }
 
