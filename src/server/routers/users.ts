@@ -7,6 +7,7 @@ import { noQuery, dataFound, noData } from '../utils/queryHelpers';
 
 const checkLoggedIn = (ctx: Context) => {
   if (!ctx.session || !ctx.session.user) {
+    console.log(ctx.session);
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Must be logged in',
@@ -44,8 +45,6 @@ export const userRouter = createRouter()
       invalid_type_error: 'Must be a string',
     }),
     async resolve({ ctx, input }) {
-      checkLoggedIn(ctx);
-
       if (!input) {
         return noQuery;
       }

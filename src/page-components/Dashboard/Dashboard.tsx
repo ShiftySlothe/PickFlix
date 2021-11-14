@@ -1,3 +1,5 @@
+import TinderCardsPage from '../../components/TinderCardsPage';
+
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return <TinderCardsPage />;
 }

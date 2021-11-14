@@ -41,5 +41,4 @@ Right pane
 BUGS: 
 
     Sign up flow:
-        User can send themselves a friend request -> remove user from list
-        Genres appear in random order -> filter by alpha
+        
