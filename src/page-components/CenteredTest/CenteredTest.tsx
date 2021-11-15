@@ -9,8 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { AddFriendsForm } from '../../components/SignUpFlowForms/AddFriendsForm';
 import { GroupsForm } from '../../components/SignUpFlowForms/CreateGroupsForm';
+import TrpcTest from './trpcTest';
 
-export default function Home() {
+export default function CenteredTest() {
   return (
     <Flex
       minH={'100vh'}
@@ -31,7 +32,7 @@ export default function Home() {
           boxShadow={'lg'}
           p={8}
         >
-          <GroupsForm />
+          <TrpcTest />
         </Box>
       </Stack>
     </Flex>

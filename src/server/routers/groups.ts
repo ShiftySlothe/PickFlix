@@ -2,6 +2,7 @@ import { createRouter } from '../createRouter';
 import { TRPCError } from '@trpc/server';
 import * as Yup from 'yup';
 import { checkLoggedIn, checkIsGroupAdmin } from '../utils/queryHelpers';
+import { Genre, UserGroup } from '@prisma/client';
 
 export const groupRouter = createRouter()
   .query('getUserGroupsFromSession', {
@@ -73,6 +74,38 @@ export const groupRouter = createRouter()
       return existingInvites;
     },
   })
+  .query('findSharedGenreIds', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      checkIsGroupAdmin(ctx, input.groupId);
+
+      const userPreferences = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+        },
+        include: {
+          users: {
+            select: {
+              preferedGenres: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!userPreferences || userPreferences.users.length < 2) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      }
+
+      return findSharedGenreIds(userPreferences);
+    },
+  })
   .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),
@@ -84,7 +117,7 @@ export const groupRouter = createRouter()
         data: {
           name: input.name,
           users: { connect: [{ id: ctx?.session?.user.id }] },
-          groupOwner: { connect: { id: ctx?.session?.user?.id } },
+          groupOwners: { connect: [{ id: ctx?.session?.user?.id }] },
         },
       });
 
@@ -172,9 +205,29 @@ export const groupRouter = createRouter()
         data: {
           accepted: true,
         },
+        include: {
+          userGroup: {
+            select: {
+              id: true,
+            },
+          },
+        },
       });
 
-      return accepted;
+      const added = await ctx.prisma.userGroup.update({
+        where: {
+          id: accepted.userGroup.id,
+        },
+        data: {
+          users: {
+            connect: {
+              id: accepted.recipientId,
+            },
+          },
+        },
+      });
+
+      return [accepted, added];
     },
   })
   .mutation('declineRequestById', {
@@ -182,16 +235,35 @@ export const groupRouter = createRouter()
       id: Yup.number().required(),
     }).required(),
     async resolve({ ctx, input }) {
-      const accepted = await ctx.prisma.userGroupRequests.update({
+      const declined = await ctx.prisma.userGroupRequests.update({
         where: {
           id: input.id,
         },
         data: {
           accepted: false,
         },
+        include: {
+          userGroup: {
+            select: {
+              id: true,
+            },
+          },
+        },
       });
 
-      return accepted;
+      const removed = await ctx.prisma.userGroup.update({
+        where: {
+          id: declined.userGroup.id,
+        },
+        data: {
+          users: {
+            disconnect: {
+              id: declined.recipientId,
+            },
+          },
+        },
+      });
+      return [declined, removed];
     },
   })
   .mutation('acceptRequestBySession', {
@@ -211,7 +283,19 @@ export const groupRouter = createRouter()
         },
       });
 
-      return accepted;
+      const added = await ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          users: {
+            connect: {
+              id: ctx.session?.user?.id,
+            },
+          },
+        },
+      });
+      return [accepted, added];
     },
   })
   .mutation('declineRequestBySession', {
@@ -221,7 +305,7 @@ export const groupRouter = createRouter()
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
 
-      const accepted = await ctx.prisma.userGroupRequests.updateMany({
+      const declined = await ctx.prisma.userGroupRequests.updateMany({
         where: {
           userGroupId: input.groupId,
           recipientId: ctx?.session?.user?.id,
@@ -231,7 +315,20 @@ export const groupRouter = createRouter()
         },
       });
 
-      return accepted;
+      const removed = await ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          users: {
+            disconnect: {
+              id: ctx.session?.user?.id,
+            },
+          },
+        },
+      });
+
+      return [declined, removed];
     },
   })
   .mutation('delete', {
@@ -253,8 +350,41 @@ export const groupRouter = createRouter()
     },
   });
 
-// find shared genres
-// get group members
-// get shared preferences
+function findSharedGenreIds(
+  userPreferences: UserGroup & {
+    users: {
+      preferedGenres: {
+        id: number;
+      }[];
+    }[];
+  },
+) {
+  const matchIds: number[] = [];
+  const allUserPreferences: number[] = [];
+
+  // Add all first users preferences
+  userPreferences.users[0].preferedGenres.forEach((p) =>
+    allUserPreferences.push(p.id),
+  );
+
+  //For each remaining user in group & each preferences
+  for (let i = 1; i < userPreferences.users.length; i++) {
+    userPreferences.users[i].preferedGenres.forEach(({ id }) => {
+      const isNewMatch =
+        allUserPreferences.includes(id) && !matchIds.includes(id);
+      if (isNewMatch) {
+        matchIds.push(id);
+      } else if (!allUserPreferences.includes(id)) {
+        allUserPreferences.push(id);
+      }
+    });
+  }
+
+  return matchIds;
+}
+
 // get single member preferences
-// Change group owner
+// get group members
+// Update group owner
+// User likes show
+// User dislikes show

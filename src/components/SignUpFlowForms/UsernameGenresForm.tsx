@@ -21,7 +21,7 @@ export function UsernameGenresForm({ setFormProgress }: FormProps) {
   const [usernameQ, setUsernameQ] = useState('');
   const usernameQuery = trpc.useQuery(['user.getUsernameFromSession']);
   const userMatchQuery = trpc.useQuery([
-    'user.usernameExists',
+    'user.usernameExistsElsewhere',
     { username: usernameQ },
   ]);
 
@@ -58,7 +58,7 @@ export function UsernameGenresForm({ setFormProgress }: FormProps) {
           )
           .test('username-backend-validation', 'Username taken', () => {
             const userNameExists = userMatchQuery.data;
-            return !!userNameExists;
+            return !userNameExists;
           }),
       })}
       validateOnBlur={true}

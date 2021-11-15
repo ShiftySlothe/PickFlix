@@ -42,7 +42,7 @@ export const userRouter = createRouter()
       return user;
     },
   })
-  .query('usernameExists', {
+  .query('usernameExistsElsewhere', {
     input: Yup.object({
       username: Yup.string().required(),
     }),
@@ -51,6 +51,9 @@ export const userRouter = createRouter()
       const exists = await ctx.prisma.user.findFirst({
         where: {
           userName: input.username,
+          NOT: {
+            id: ctx?.session?.user.id,
+          },
         },
       });
 
@@ -106,6 +109,48 @@ export const userRouter = createRouter()
       });
 
       return !!likesGenre;
+    },
+  })
+  .query('getLikedGenresFromSession', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+
+      const likedGenres = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        select: {
+          preferedGenres: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      return likedGenres?.preferedGenres;
+    },
+  })
+  .query('getLikedGenreIdsFromSession', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+
+      const likedGenres = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        select: {
+          preferedGenres: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      const likedGenreIds: number[] = [];
+      likedGenres?.preferedGenres.forEach(({ id }) => likedGenreIds.push(id));
+      return likedGenreIds;
     },
   })
   .mutation('updateUser', {
@@ -209,3 +254,8 @@ export const userRouter = createRouter()
       return user;
     },
   });
+
+// Remove genre
+// Remove genres
+// Get currently swiping in
+// Update currently swiping in

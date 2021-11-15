@@ -30,18 +30,22 @@ export const checkLoggedIn = (ctx: Context) => {
   }
 };
 
-export const checkIsGroupAdmin =async (ctx, groupId) => {
+export const checkIsGroupAdmin = async (ctx, groupId) => {
   const isGroupAdmin = await ctx.prisma.userGroup.findFirst({
     where: {
       id: groupId,
-      groupOwnerId: ctx?.session?.user?.id,
-    }
-  })
-  
-  if(!isGroupAdmin) {
+      groupOwners: {
+        some: {
+          id: ctx?.session?.user?.id,
+        },
+      },
+    },
+  });
+
+  if (!isGroupAdmin) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
-      message: 'Must be admin to send invite.'
-    })
+      message: 'Must be admin to send invite.',
+    });
   }
-}
+};

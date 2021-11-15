@@ -13,7 +13,7 @@ interface AddUserFieldProps {
 
 export function AddFriendField({ user, setIsAddingUser }: AddUserFieldProps) {
   const toast = useToast();
-  const friendReqMutation = trpc.useMutation('friend.sendFriendRequest');
+  const friendReqMutation = trpc.useMutation('friend.sendRequest');
 
   const onAdd = async () => {
     setIsAddingUser(true);
