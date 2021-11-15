@@ -1,7 +1,10 @@
 import { moviesRouter } from './movies';
 import { createRouter } from '../createRouter';
 import { authRouter } from './auth';
-import { userRouter } from './users';
+import { userRouter } from './user';
+import { friendRouter } from './friends';
+import { groupRouter } from './groups';
+
 /**
  * Create your application's root router
  * If you want to use SSG, you need export this
@@ -20,6 +23,8 @@ export const appRouter = createRouter()
   // .formatError(({ shape, error }) => { })
   .merge('movies.', moviesRouter)
   .merge('auth.', authRouter)
-  .merge('users.', userRouter);
+  .merge('user.', userRouter)
+  .merge('friend.', friendRouter)
+  .merge('group.', groupRouter);
 
 export type AppRouter = typeof appRouter;

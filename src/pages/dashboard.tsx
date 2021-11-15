@@ -8,7 +8,7 @@ import Router from 'next/router';
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const newUserQuery = trpc.useQuery(['users.isNewUser']);
+  const newUserQuery = trpc.useQuery(['user.isNewUser']);
   const isNewUser = newUserQuery.data?.newUser;
 
   useEffect(() => {

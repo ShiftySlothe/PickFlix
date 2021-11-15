@@ -15,7 +15,10 @@ interface FormProps {
 export function AddFriendsForm({ setFormProgress }: FormProps) {
   const [usernameQ, setUsernameQ] = useState('');
   const handleChange = (e: any) => setUsernameQ(e.target.value);
-  const userMatchQuery = trpc.useQuery(['users.search', usernameQ]);
+  const userMatchQuery = trpc.useQuery([
+    'user.findManyByUsername',
+    { usernameQuery: usernameQ },
+  ]);
   const userMatches = userMatchQuery.data;
 
   const [isAddingUser, setIsAddingUser] = useState(false);

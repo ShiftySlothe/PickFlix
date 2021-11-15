@@ -38,7 +38,7 @@ interface FormProps {
 
 export function GroupsForm({ setFormProgress }: FormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userGroupsQuery = trpc.useQuery(['users.getUserGroups']);
+  const userGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
   const userGroups = userGroupsQuery.data;
   return (
     <>
@@ -105,7 +105,7 @@ interface CreateGroupFormProps {
   setGroup: Dispatch<SetStateAction<UserGroup | null>>;
 }
 function CreateGroupForm({ setGroup }: CreateGroupFormProps) {
-  const createGroupMutation = trpc.useMutation('users.createUserGroup');
+  const createGroupMutation = trpc.useMutation('group.createUserGroup');
   const toast = useToast();
   const [formSubmitted, setformSubmitted] = useState(false);
   return (
@@ -178,7 +178,7 @@ function AddFriendsToGroupForm({ group }: AddFriendsToGroupFormProps) {
   const [usernameQ, setUsernameQ] = useState('');
   const handleChange = (e: any) => setUsernameQ(e.target.value);
   const userFriendRequestsQuery = trpc.useQuery([
-    'users.getUserFriendRequests',
+    'friend.getRequestsFromSession',
   ]);
   const friendRequests = userFriendRequestsQuery.data;
   const [isAddingUser, setIsAddingUser] = useState(false);
@@ -243,11 +243,11 @@ function AddFriendToGroupField({
   setAddedUsers,
 }: AddFriendToGroupFieldProps) {
   const toast = useToast();
-  const friendReqMutation = trpc.useMutation('users.inviteUserToGroup');
+  const friendReqMutation = trpc.useMutation('group.inviteUserToGroup');
 
   const onAdd = async () => {
     setIsAddingUser(true);
-    const groupReqObj = { groupID: group.id, userID: recipient.id };
+    const groupReqObj = { groupId: group.id, userId: recipient.id };
     await friendReqMutation.mutateAsync(groupReqObj);
     setAddedUsers((addedUsers) => {
       if (addedUsers.includes(recipient)) {
@@ -338,8 +338,8 @@ interface UpdateGroupModalProps {
 }
 function UpdateGroupModal({ group }: UpdateGroupModalProps) {
   const groupInvitesQuery = trpc.useQuery([
-    'users.getGroupInvites',
-    { groupID: group.id },
+    'group.getInvites',
+    { groupId: group.id },
   ]);
   const groupInvites = groupInvitesQuery.data;
   // TODO implement form

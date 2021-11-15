@@ -44,7 +44,7 @@ export const groupRouter = createRouter()
       return isGroupMember;
     },
   })
-  .query('getGroupInvites', {
+  .query('getInvites', {
     input: Yup.object({
       groupId: Yup.number().required(),
     }).required(),

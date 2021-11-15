@@ -8,9 +8,10 @@ import { UsernameGenresForm } from '../../components/SignUpFlowForms/UsernameGen
 import { DetailsFormProgress } from '../../lib/enums';
 import Router from 'next/router';
 import { trpc } from '../../server/utils/trpc';
+
 export default function UpdateDetails() {
   const [formProgress, setFormProgress] = useState(DetailsFormProgress.Base);
-  const disableNewUser = trpc.useMutation('users.disableNewUser');
+  const disableNewUser = trpc.useMutation('user.disableNewUser');
   return (
     <Flex
       minH={'100vh'}

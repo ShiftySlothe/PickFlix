@@ -19,11 +19,14 @@ interface FormProps {
 export function UsernameGenresForm({ setFormProgress }: FormProps) {
   // Set on username input blur, used in trpc query
   const [usernameQ, setUsernameQ] = useState('');
-  const usernameQuery = trpc.useQuery(['users.getUsername']);
-  const userMatchQuery = trpc.useQuery(['users.usernameExists', usernameQ]);
+  const usernameQuery = trpc.useQuery(['user.getUsernameFromSession']);
+  const userMatchQuery = trpc.useQuery([
+    'user.usernameExists',
+    { username: usernameQ },
+  ]);
 
-  const usernameMutation = trpc.useMutation('users.updateUsername');
-  const genresMutation = trpc.useMutation('users.addLikedGenres');
+  const usernameMutation = trpc.useMutation('user.updateUsername');
+  const genresMutation = trpc.useMutation('user.addLikedGenres');
   return (
     <Formik
       initialValues={{
@@ -31,7 +34,7 @@ export function UsernameGenresForm({ setFormProgress }: FormProps) {
         genres: [] as number[],
       }}
       onSubmit={async (values) => {
-        await usernameMutation.mutateAsync(values.username);
+        await usernameMutation.mutateAsync({ username: values.username });
         const reformattedGenres = values.genres.map((g) => ({
           id: g,
         }));
@@ -54,11 +57,8 @@ export function UsernameGenresForm({ setFormProgress }: FormProps) {
             },
           )
           .test('username-backend-validation', 'Username taken', () => {
-            const userNameCheck = userMatchQuery.data;
-            if (!userNameCheck || !userNameCheck.found) {
-              return true;
-            }
-            return false;
+            const userNameExists = userMatchQuery.data;
+            return !!userNameExists;
           }),
       })}
       validateOnBlur={true}

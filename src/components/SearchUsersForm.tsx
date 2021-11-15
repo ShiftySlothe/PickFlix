@@ -37,10 +37,6 @@ export default function SearchUsersForm() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [usernameQuery, setUsernameQuery] = useState('');
 
-  useEffect(() => {
-    console.log(usernameQuery);
-  }, [usernameQuery]);
-
   const onSubmit = async (
     values: FormValues,
     { setSubmitting }: FormikHelpers<FormValues>,
@@ -120,7 +116,10 @@ interface SearchFormResponseProps {
   username: string;
 }
 function SearchFormResponse({ username }: SearchFormResponseProps) {
-  const userMatchQuery = trpc.useQuery(['users.search', username]);
+  const userMatchQuery = trpc.useQuery([
+    'user.findManyByUsername',
+    { usernameQuery: username },
+  ]);
   const userMatches = userMatchQuery.data;
 
   useEffect(() => {

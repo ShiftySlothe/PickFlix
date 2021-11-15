@@ -13,11 +13,11 @@ interface AddUserFieldProps {
 
 export function AddFriendField({ user, setIsAddingUser }: AddUserFieldProps) {
   const toast = useToast();
-  const friendReqMutation = trpc.useMutation('users.sendFriendRequest');
+  const friendReqMutation = trpc.useMutation('friend.sendFriendRequest');
 
-  const onAdd = async (e) => {
+  const onAdd = async () => {
     setIsAddingUser(true);
-    const friendReqObj = { id: user.id };
+    const friendReqObj = { recipientId: user.id };
     await friendReqMutation.mutateAsync(friendReqObj);
     toast({
       title: 'Friend request sent.',

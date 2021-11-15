@@ -56,7 +56,7 @@ export const friendRouter = createRouter()
       return friendRequests;
     },
   })
-  .mutation('sendFriendRequest', {
+  .mutation('sendRequest', {
     input: Yup.object({ recipientId: Yup.string().required() }).required(),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
@@ -84,7 +84,7 @@ export const friendRouter = createRouter()
       }
     },
   })
-  .mutation('acceptFriendRequest', {
+  .mutation('acceptRequest', {
     input: Yup.object({
       senderId: Yup.string().required(),
     }),
@@ -117,7 +117,7 @@ export const friendRouter = createRouter()
       return accepted;
     },
   })
-  .mutation('declineFriendRequest', {
+  .mutation('declineRequest', {
     input: Yup.object({
       senderId: Yup.string().required(),
     }),
