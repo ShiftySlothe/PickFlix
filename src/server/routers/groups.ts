@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import * as Yup from 'yup';
 import { checkLoggedIn, checkIsGroupAdmin } from '../utils/queryHelpers';
 import { Genre, UserGroup } from '@prisma/client';
+import { resolve } from 'path/posix';
 
 export const groupRouter = createRouter()
   .query('getUserGroupsFromSession', {
@@ -45,6 +46,24 @@ export const groupRouter = createRouter()
       return isGroupMember;
     },
   })
+  .query('getGroupMembers', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+
+    async resolve({ ctx, input }) {
+      const groupMembers = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+        },
+        select: {
+          users: true,
+        },
+      });
+
+      return groupMembers;
+    },
+  })
   .query('getInvites', {
     input: Yup.object({
       groupId: Yup.number().required(),
@@ -74,13 +93,13 @@ export const groupRouter = createRouter()
       return existingInvites;
     },
   })
-  .query('findSharedGenreIds', {
+  .query('findSharedPreferedGenreIds', {
     input: Yup.object({
       groupId: Yup.number().required(),
     }).required(),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
-      checkIsGroupAdmin(ctx, input.groupId);
+      await checkIsGroupAdmin(ctx, input.groupId);
 
       const userPreferences = await ctx.prisma.userGroup.findFirst({
         where: {
@@ -100,6 +119,38 @@ export const groupRouter = createRouter()
       });
 
       if (!userPreferences || userPreferences.users.length < 2) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      }
+
+      return findSharedGenreIds(userPreferences);
+    },
+  })
+  .query('findAllGroupPreferedGenreIds', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      await checkIsGroupAdmin(ctx, input.groupId);
+
+      const userPreferences = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+        },
+        include: {
+          users: {
+            select: {
+              preferedGenres: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!userPreferences) {
         throw new TRPCError({ code: 'BAD_REQUEST' });
       }
 
@@ -131,7 +182,7 @@ export const groupRouter = createRouter()
     }).required(),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
-      checkIsGroupAdmin(ctx, input.groupId);
+      await checkIsGroupAdmin(ctx, input.groupId);
 
       const existingInvite = await ctx.prisma.userGroupRequests.findFirst({
         where: {
@@ -338,7 +389,7 @@ export const groupRouter = createRouter()
 
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
-      checkIsGroupAdmin(ctx, input.groupId);
+      await checkIsGroupAdmin(ctx, input.groupId);
 
       const deletion = await ctx.prisma.userGroup.delete({
         where: {
@@ -347,6 +398,32 @@ export const groupRouter = createRouter()
       });
 
       return deletion;
+    },
+  })
+  .mutation('addGroupAdmin', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+      userId: Yup.string().required(),
+    }).required(),
+
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      await checkIsGroupAdmin(ctx, input.groupId);
+
+      const newAdmin = ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          groupOwners: {
+            connect: {
+              id: input.userId,
+            },
+          },
+        },
+      });
+
+      return newAdmin;
     },
   });
 
@@ -383,8 +460,29 @@ function findSharedGenreIds(
   return matchIds;
 }
 
-// get single member preferences
-// get group members
-// Update group owner
+function findAllGenreIds(
+  userPreferences: UserGroup & {
+    users: {
+      preferedGenres: {
+        id: number;
+      }[];
+    }[];
+  },
+) {
+  const allUserPreferences: number[] = [];
+
+  //For each  user in group & each preferences
+  for (let i = 0; i < userPreferences.users.length; i++) {
+    userPreferences.users[i].preferedGenres.forEach(({ id }) => {
+      const isNewMatch = !allUserPreferences.includes(id);
+      if (isNewMatch) {
+        allUserPreferences.push(id);
+      }
+    });
+  }
+
+  return allUserPreferences;
+}
+
 // User likes show
 // User dislikes show
