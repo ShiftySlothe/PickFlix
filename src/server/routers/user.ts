@@ -153,6 +153,22 @@ export const userRouter = createRouter()
       return likedGenreIds;
     },
   })
+  .query('getActiveGroup', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+
+      const activeGroup = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx.session?.user?.id,
+        },
+        select: {
+          activeGroup: true,
+        },
+      });
+
+      return activeGroup;
+    },
+  })
   .mutation('updateUser', {
     // Need to model user object
 
@@ -253,9 +269,97 @@ export const userRouter = createRouter()
 
       return user;
     },
-  });
+  })
+  .mutation('addLikedGenre', {
+    input: Yup.object({ id: Yup.number().required() }),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
 
-// Remove genre
-// Remove genres
-// Get currently swiping in
-// Update currently swiping in
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          preferedGenres: {
+            connect: input,
+          },
+        },
+      });
+
+      return user;
+    },
+  })
+  .mutation('removeLikedGenres', {
+    input: Yup.array().of(Yup.object({ id: Yup.number().required() })),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
+      // Add array of genreID's to user preferences
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          preferedGenres: {
+            disconnect: input,
+          },
+        },
+      });
+
+      return user;
+    },
+  })
+  .mutation('rempveLikedGenre', {
+    input: Yup.object({ id: Yup.number().required() }),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          preferedGenres: {
+            disconnect: input,
+          },
+        },
+      });
+
+      return user;
+    },
+  })
+  .mutation('deletePerm', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+
+      const deletion = await ctx.prisma.user.delete({
+        where: {
+          id: ctx.session?.user?.id,
+        },
+      });
+
+      return deletion;
+    },
+  })
+  .mutation('updateActiveGroup', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
+      const newGroup = await ctx.prisma.user.update({
+        where: {
+          id: ctx.session?.user?.id,
+        },
+        data: {
+          activeGroup: {
+            connect: {
+              id: input.groupId,
+            },
+          },
+        },
+      });
+    },
+  });

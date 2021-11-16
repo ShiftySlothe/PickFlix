@@ -1,7 +1,6 @@
 import { createRouter } from '../createRouter';
-import { TRPCError } from '@trpc/server';
 import * as Yup from 'yup';
-import { checkLoggedIn, checkIsGroupAdmin } from '../utils/queryHelpers';
+import { checkLoggedIn } from '../utils/queryHelpers';
 
 export const groupLikesRouter = createRouter()
   .mutation('userLikesTVShow', {

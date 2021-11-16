@@ -20,9 +20,7 @@ Then home screen, three panes, left pane is user profile & settings, middle pane
 
 Left pane 
 Endpoint requries -> Query GET USER DETAILS 
-                    Update -> Update user details (do we update individual details or details as a whole, which details do we update)
                     Update -> Update settings... at this stage what settings will a user have (dark mode?)
-                    Update -> Update preferences (e.g. liked movies)
                     Update -> Delete account
 
 Middle pane 
