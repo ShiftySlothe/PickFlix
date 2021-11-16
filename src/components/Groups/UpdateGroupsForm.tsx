@@ -79,7 +79,7 @@ interface UpdateGroupModalProps {
 }
 function UpdateGroupModal({ group }: UpdateGroupModalProps) {
   const groupInvitesQuery = trpc.useQuery([
-    'group.getInvites',
+    'group.getInvitesForGroup',
     { groupId: group.id },
   ]);
   const groupInvites = groupInvitesQuery.data;

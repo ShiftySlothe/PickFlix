@@ -5,7 +5,7 @@ import { trpc } from '../../server/utils/trpc';
 import { GiThreeFriends } from 'react-icons/gi';
 import Group from './Group';
 import { Button, IconButton } from '@chakra-ui/button';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Tooltip } from '@chakra-ui/tooltip';
 import { useDisclosure } from '@chakra-ui/hooks';
 import {
@@ -18,10 +18,9 @@ import {
   DrawerCloseButton,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-import {
-  CreateGroupForm,
-  GroupsForm,
-} from '../SignUpFlowForms/CreateGroupsForm';
+import CreateGroupForm from './CreateGroupsForm';
+import { User, UserGroup, UserGroupRequests } from '.prisma/client';
+import { Avatar } from '@chakra-ui/avatar';
 
 export default function Groups() {
   const groupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
@@ -59,6 +58,10 @@ function GroupsHeader() {
 function GroupInvites() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
+  const invitesQuery = trpc.useQuery(['group.getInvitesFromSession']);
+
+  const invites = invitesQuery.data;
+
   return (
     <>
       <Tooltip label="Invites" placement="top">
@@ -82,18 +85,45 @@ function GroupInvites() {
           <DrawerHeader>Group Invites</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            {!!invites && invites.length > 0 ? (
+              invites.map((invite) => (
+                <GroupInvitation invite={invite} key={invite.id} />
+              ))
+            ) : (
+              <Text>No invites at the moment!</Text>
+            )}
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
+              Close
             </Button>
-            <Button colorScheme="blue">Save</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
+  );
+}
+
+interface GroupInvitationProps {
+  invite: UserGroupRequests & {
+    sender: {
+      name: string | null;
+      userName: string | null;
+    };
+    userGroup: UserGroup;
+  };
+}
+
+function GroupInvitation({ invite }: GroupInvitationProps) {
+  return (
+    <Flex>
+      <Avatar name={invite.userGroup.name} />
+      <Text>From: {invite.sender.userName}</Text>
+      <IconButton aria-label="More info" icon={<HamburgerIcon />} />
+      <IconButton aria-label="Accept request" icon={<CheckIcon />} />
+      <IconButton aria-label="Decline request" icon={<CloseIcon />} />
+    </Flex>
   );
 }
 

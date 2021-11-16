@@ -63,7 +63,7 @@ export const groupRouter = createRouter()
       return groupMembers;
     },
   })
-  .query('getInvites', {
+  .query('getInvitesForGroup', {
     input: Yup.object({
       groupId: Yup.number().required(),
     }).required(),
@@ -90,6 +90,28 @@ export const groupRouter = createRouter()
       });
 
       return existingInvites;
+    },
+  })
+  .query('getInvitesFromSession', {
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
+      const invites = await ctx.prisma.userGroupRequests.findMany({
+        where: {
+          recipientId: ctx.session?.user?.id,
+        },
+        include: {
+          sender: {
+            select: {
+              name: true,
+              userName: true,
+            },
+          },
+          userGroup: true,
+        },
+      });
+
+      return invites;
     },
   })
   .query('findSharedPreferedGenreIds', {
