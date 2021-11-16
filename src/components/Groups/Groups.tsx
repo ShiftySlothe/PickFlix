@@ -3,7 +3,7 @@ import { Box, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/layout';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { trpc } from '../../server/utils/trpc';
 import { GiThreeFriends } from 'react-icons/gi';
-import Group from './Group';
+import Group from './Group/Group';
 import { Button, IconButton } from '@chakra-ui/button';
 import { AddIcon, CheckIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Tooltip } from '@chakra-ui/tooltip';

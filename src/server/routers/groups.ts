@@ -196,6 +196,25 @@ export const groupRouter = createRouter()
       return name;
     },
   })
+  .query('isGroupAdmin', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      const isAdmin = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+          groupOwners: {
+            some: {
+              id: ctx.session?.user?.id,
+            },
+          },
+        },
+      });
+
+      return !!isAdmin;
+    },
+  })
   .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),
@@ -463,6 +482,27 @@ export const groupRouter = createRouter()
       });
 
       return newAdmin;
+    },
+  })
+  .mutation('updateGroupName', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+      newName: Yup.string().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      await checkIsGroupAdmin(ctx, input.groupId);
+
+      const update = await ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          name: input.newName,
+        },
+      });
+
+      return update;
     },
   });
 
