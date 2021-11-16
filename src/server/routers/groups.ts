@@ -2,8 +2,7 @@ import { createRouter } from '../createRouter';
 import { TRPCError } from '@trpc/server';
 import * as Yup from 'yup';
 import { checkLoggedIn, checkIsGroupAdmin } from '../utils/queryHelpers';
-import { Genre, UserGroup } from '@prisma/client';
-import { resolve } from 'path/posix';
+import { UserGroup } from '@prisma/client';
 
 export const groupRouter = createRouter()
   .query('getUserGroupsFromSession', {

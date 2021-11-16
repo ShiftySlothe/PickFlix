@@ -4,7 +4,7 @@ import { authRouter } from './auth';
 import { userRouter } from './user';
 import { friendRouter } from './friends';
 import { groupRouter } from './groups';
-
+import { groupLikesRouter } from './groupLikes';
 /**
  * Create your application's root router
  * If you want to use SSG, you need export this
@@ -25,6 +25,7 @@ export const appRouter = createRouter()
   .merge('auth.', authRouter)
   .merge('user.', userRouter)
   .merge('friend.', friendRouter)
-  .merge('group.', groupRouter);
+  .merge('group.', groupRouter)
+  .merge('groupLikes.', groupLikesRouter);
 
 export type AppRouter = typeof appRouter;

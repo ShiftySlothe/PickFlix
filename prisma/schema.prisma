@@ -122,13 +122,14 @@ model userGroupLikes {
   userGroup   UserGroup @relation(fields: [userGroupID], references: [id])
   movies      Movie[]   @relation(references: [id])
   tvShows     TVShow[]  @relation(references: [id])
+  liked       Boolean
 }
 
 model Genre {
-  id        Int         @id @default(autoincrement())
-  genreID   Int
-  name      String
-  User      User[]
+  id      Int    @id @default(autoincrement())
+  genreID Int
+  name    String
+  User    User[]
 
 }
 
