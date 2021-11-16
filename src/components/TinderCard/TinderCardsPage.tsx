@@ -1,7 +1,7 @@
 import { Center } from '@chakra-ui/layout';
 import React from 'react';
-import TinderCards from './TinderCard/TinderCards';
-import { trpc } from '../server/utils/trpc';
+import TinderCards from './TinderCards';
+import { trpc } from '../../server/utils/trpc';
 import NextError from 'next/error';
 
 export default function TinderCardsPage() {

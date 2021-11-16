@@ -2,14 +2,14 @@ import {
   Flex,
   Box,
   Stack,
+  Center,
   Link,
   Heading,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { AddFriendsForm } from '../../components/SignUpFlowForms/AddFriendsForm';
-import { GroupsForm } from '../../components/SignUpFlowForms/CreateGroupsForm';
-import TrpcTest from './trpcTest';
+import Group from '../../components/Groups/Group';
+import Groups from '../../components/Groups/Groups';
 
 export default function CenteredTest() {
   return (
@@ -19,21 +19,18 @@ export default function CenteredTest() {
       justify={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
-      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+      <Stack spacing={8} mx={'auto'} py={12} px={6}>
         <Stack align={'center'}>
-          <Heading fontSize={'4xl'}>Update your details</Heading>
-          <Text fontSize={'lg'} color={'gray.600'}>
-            to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
-          </Text>
+          <Heading fontSize={'4xl'}>Testy mcTestFace</Heading>
         </Stack>
-        <Box
+        <Center
           rounded={'lg'}
           bg={useColorModeValue('white', 'gray.700')}
           boxShadow={'lg'}
           p={8}
         >
-          <TrpcTest />
-        </Box>
+          <Groups />
+        </Center>
       </Stack>
     </Flex>
   );

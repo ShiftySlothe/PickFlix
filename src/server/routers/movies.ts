@@ -42,6 +42,11 @@ export const moviesRouter = createRouter()
           id: true,
           name: true,
         },
+        orderBy: [
+          {
+            name: 'asc',
+          },
+        ],
       });
       return genres;
     },

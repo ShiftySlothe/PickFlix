@@ -156,6 +156,24 @@ export const groupRouter = createRouter()
       return findSharedGenreIds(userPreferences);
     },
   })
+  .query('getGroupName', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+
+    async resolve({ ctx, input }) {
+      const name = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+        },
+        select: {
+          name: true,
+        },
+      });
+
+      return name;
+    },
+  })
   .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),
