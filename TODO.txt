@@ -1,9 +1,6 @@
 CURRENT:
 
-Prisma migrate as added new options, usergroup owner changed to array malformatted
-
-FINISH THE FUCKING FROM
-1) Finish update groups form
+Need to review routers to ensure we're not sending sensitive data to the client
 
 
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS

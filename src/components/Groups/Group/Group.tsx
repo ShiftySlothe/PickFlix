@@ -44,14 +44,17 @@ export default function Group({ groupId }: GroupProps) {
         </Text>
         <Box mr={1}>
           <GroupLikes groupId={groupId} />
-          <GroupSettings groupId={groupId} />
+          <GroupSettings groupId={groupId} groupName={data?.name} />
         </Box>
       </Flex>
     </Skeleton>
   );
 }
 
-function GroupSettings({ groupId }: GroupProps) {
+interface GroupSettingsProps extends GroupProps {
+  groupName: string | undefined;
+}
+function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
   return (
@@ -74,7 +77,9 @@ function GroupSettings({ groupId }: GroupProps) {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Group settings</DrawerHeader>
+          <DrawerHeader>
+            {groupName ? groupName : 'Group'} settings
+          </DrawerHeader>
 
           <DrawerBody>
             <SettingsBody groupId={groupId} />
@@ -92,7 +97,10 @@ function GroupSettings({ groupId }: GroupProps) {
 }
 
 function SettingsBody({ groupId }: GroupProps) {
-  const adminQuery = trpc.useQuery(['group.isGroupAdmin', { groupId }]);
+  const adminQuery = trpc.useQuery([
+    'group.isGroupAdminFromSession',
+    { groupId },
+  ]);
   const isAdmin = adminQuery.data;
 
   return (
@@ -108,8 +116,13 @@ function StandardSettings({ groupId }: GroupProps) {
     <>
       <Heading fontSize={'md'}>Settings</Heading>
       <Divider />
+      <LeaveGroup />
     </>
   );
+}
+
+function LeaveGroup({ groupId }: GroupProps) {
+  return <div>Leave Group</div>;
 }
 function GroupLikes({ groupId }: GroupProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();

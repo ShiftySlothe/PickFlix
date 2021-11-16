@@ -45,6 +45,28 @@ export const groupRouter = createRouter()
       return isGroupMember;
     },
   })
+  .query('checkIsGroupMemberByID', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+      userId: Yup.string().required(),
+    }).required(),
+
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const isGroupMember = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+          users: {
+            some: {
+              id: input.userId,
+            },
+          },
+        },
+      });
+
+      return !!isGroupMember;
+    },
+  })
   .query('getGroupMembers', {
     input: Yup.object({
       groupId: Yup.number().required(),
@@ -196,9 +218,30 @@ export const groupRouter = createRouter()
       return name;
     },
   })
-  .query('isGroupAdmin', {
+  .query('isGroupAdminFromSession', {
     input: Yup.object({
       groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const isAdmin = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+          groupOwners: {
+            some: {
+              id: ctx.session?.user?.id,
+            },
+          },
+        },
+      });
+
+      return !!isAdmin;
+    },
+  })
+  .query('isGroupAdminFromId', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+      userId: Yup.string().required(),
     }).required(),
     async resolve({ ctx, input }) {
       const isAdmin = await ctx.prisma.userGroup.findFirst({
@@ -206,7 +249,7 @@ export const groupRouter = createRouter()
           id: input.groupId,
           groupOwners: {
             some: {
-              id: ctx.session?.user?.id,
+              id: input.userId,
             },
           },
         },
@@ -503,6 +546,31 @@ export const groupRouter = createRouter()
       });
 
       return update;
+    },
+  })
+  .mutation('removeUserFromGroup', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+      userId: Yup.string().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      await checkIsGroupAdmin(ctx, input.groupId);
+
+      const removed = await ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          users: {
+            disconnect: {
+              id: input.userId,
+            },
+          },
+        },
+      });
+
+      return removed;
     },
   });
 
