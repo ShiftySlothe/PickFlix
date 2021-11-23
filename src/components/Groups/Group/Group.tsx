@@ -16,7 +16,7 @@ import {
   DrawerOverlay,
 } from '@chakra-ui/modal';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { useRef } from 'react';
+import { createContext, useRef } from 'react';
 import { FormControl } from '@chakra-ui/form-control';
 import AdminSettings from './AdminSettings';
 
@@ -51,6 +51,9 @@ export default function Group({ groupId }: GroupProps) {
   );
 }
 
+export const SettingsDrawerContext = createContext(() => {
+  /*Do nothing */
+});
 interface GroupSettingsProps extends GroupProps {
   groupName: string | undefined;
 }
@@ -58,7 +61,7 @@ function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
   return (
-    <>
+    <SettingsDrawerContext.Provider value={onClose}>
       <Tooltip label="Settings" placement="top">
         <IconButton
           aria-label="Group settings"
@@ -92,7 +95,7 @@ function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </>
+    </SettingsDrawerContext.Provider>
   );
 }
 
@@ -116,7 +119,7 @@ function StandardSettings({ groupId }: GroupProps) {
     <>
       <Heading fontSize={'md'}>Settings</Heading>
       <Divider />
-      <LeaveGroup />
+      <LeaveGroup groupid={groupId} />
     </>
   );
 }

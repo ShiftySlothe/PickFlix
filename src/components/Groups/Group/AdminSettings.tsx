@@ -9,7 +9,7 @@ import { Divider, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { trpc } from '../../../server/utils/trpc';
-import { GroupProps } from './Group';
+import { GroupProps, SettingsDrawerContext } from './Group';
 import { useToast } from '@chakra-ui/react';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { User } from '.prisma/client';
@@ -18,7 +18,7 @@ import { HiUserRemove, HiUserAdd } from 'react-icons/hi';
 import { GrUserAdmin } from 'react-icons/gr';
 import { Tooltip } from '@chakra-ui/tooltip';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 export default function AdminSettings({ groupId }: GroupProps) {
   return (
@@ -241,11 +241,24 @@ function InviteNewUsers({ groupId }: GroupProps) {
 
 // TODO Add an are you sure modal
 // use Context to get the sidebar to close on click
-function DeleteGroup({ groupId }) {
+function DeleteGroup({ groupId }: GroupProps) {
+  const useClose = useContext(SettingsDrawerContext);
+  const deleteMutation = trpc.useMutation('group.delete');
+  const toast = useToast();
+  const onClick = async () => {
+    toast({
+      title: 'Group deleted.',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+    await deleteMutation.mutateAsync({ groupId });
+    useClose(); //eslint-disable
+  };
   return (
     <>
       <FormLabel>Delete Group</FormLabel>
-      <Button>Delete</Button>
+      <Button onClick={onClick}>Delete</Button>
     </>
   );
 }
