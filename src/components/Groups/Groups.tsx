@@ -17,28 +17,49 @@ import {
   DrawerContent,
   DrawerCloseButton,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import CreateGroupForm from './CreateGroupsForm';
 import { User, UserGroup, UserGroupRequests } from '.prisma/client';
 import { Avatar } from '@chakra-ui/avatar';
+import { createContext } from 'react';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from 'react-query';
+import { createGenericContext } from '../../lib/createGenericContext';
+
+type Refetch = <TPageData>(
+  options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+) => Promise<QueryObserverResult>;
+
+export interface RefetchContext {
+  refetch: Refetch;
+}
+
+export const [useRefetchAllGroupsContext, RefetchAllGroupsContextProvider] =
+  createGenericContext<RefetchContext>();
 
 export default function Groups() {
   const groupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
   const groups = groupsQuery.data;
+  const refetch = groupsQuery.refetch;
 
   return (
     <VStack minW="300px">
-      <GroupsHeader />
-      <Divider mb={2} />
-      <Input placeholder="Search"></Input>
-      <Skeleton isLoaded={groupsQuery.isSuccess}>
-        <VStack>
-          {groups?.map((group) => (
-            <Group groupId={group.id} key={group.id} />
-          ))}
-          {groups && groups.length < 1 && <Text>No groups found</Text>}
-        </VStack>
-      </Skeleton>
+      <RefetchAllGroupsContextProvider value={{ refetch }}>
+        <GroupsHeader />
+        <Divider mb={2} />
+        <Input placeholder="Search"></Input>
+        <Skeleton isLoaded={groupsQuery.isSuccess}>
+          <VStack>
+            {groups?.map((group) => (
+              <Group groupId={group.id} key={group.id} />
+            ))}
+            {groups && groups.length < 1 && <Text>No groups found</Text>}
+          </VStack>
+        </Skeleton>
+      </RefetchAllGroupsContextProvider>
     </VStack>
   );
 }
@@ -61,7 +82,7 @@ function GroupInvites() {
   const invitesQuery = trpc.useQuery(['group.getInvitesFromSession']);
 
   const invites = invitesQuery.data;
-
+  const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
   return (
     <>
       <Tooltip label="Invites" placement="top">
@@ -73,17 +94,20 @@ function GroupInvites() {
           onClick={onOpen}
         />
       </Tooltip>
+
       <Drawer
         isOpen={isOpen}
         placement="right"
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          refetchAllGroups();
+        }}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Group Invites</DrawerHeader>
-
           <DrawerBody>
             {!!invites && invites.length > 0 ? (
               invites.map((invite) => (
@@ -93,9 +117,15 @@ function GroupInvites() {
               <Text>No invites at the moment!</Text>
             )}
           </DrawerBody>
-
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                onClose();
+                refetchAllGroups();
+              }}
+            >
               Close
             </Button>
           </DrawerFooter>
@@ -130,6 +160,7 @@ function GroupInvitation({ invite }: GroupInvitationProps) {
 function CreateNewGroup() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
+  const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
   return (
     <>
       <Tooltip label="Create new group" placement="top">
@@ -140,10 +171,14 @@ function CreateNewGroup() {
           onClick={onOpen}
         />
       </Tooltip>
+
       <Drawer
         isOpen={isOpen}
         placement="right"
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          refetchAllGroups();
+        }}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
@@ -156,7 +191,14 @@ function CreateNewGroup() {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                onClose();
+                refetchAllGroups();
+              }}
+            >
               Close
             </Button>
           </DrawerFooter>

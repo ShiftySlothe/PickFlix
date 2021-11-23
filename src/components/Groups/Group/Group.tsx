@@ -19,10 +19,16 @@ import { useDisclosure } from '@chakra-ui/hooks';
 import { createContext, useRef } from 'react';
 import { FormControl } from '@chakra-ui/form-control';
 import AdminSettings from './AdminSettings';
+import { RefetchContext, useRefetchAllGroupsContext } from '../Groups';
+import { createGenericContext } from '../../../lib/createGenericContext';
 
 export interface GroupProps {
   groupId: number;
 }
+
+export const [useRefetchGroupContext, RefetchGroupContextProvider] =
+  createGenericContext<RefetchContext>();
+
 export default function Group({ groupId }: GroupProps) {
   const nameQuery = trpc.useQuery(['group.getGroupName', { groupId: groupId }]);
   const data = nameQuery.data;
@@ -43,25 +49,25 @@ export default function Group({ groupId }: GroupProps) {
           {data?.name}
         </Text>
         <Box mr={1}>
-          <GroupLikes groupId={groupId} />
-          <GroupSettings groupId={groupId} groupName={data?.name} />
+          <RefetchGroupContextProvider value={{ refetch: nameQuery.refetch }}>
+            <GroupLikes groupId={groupId} />
+            <GroupSettings groupId={groupId} groupName={data?.name} />
+          </RefetchGroupContextProvider>
         </Box>
       </Flex>
     </Skeleton>
   );
 }
 
-export const SettingsDrawerContext = createContext(() => {
-  /*Do nothing */
-});
 interface GroupSettingsProps extends GroupProps {
   groupName: string | undefined;
 }
 function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
+  const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
   return (
-    <SettingsDrawerContext.Provider value={onClose}>
+    <>
       <Tooltip label="Settings" placement="top">
         <IconButton
           aria-label="Group settings"
@@ -74,7 +80,10 @@ function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
       <Drawer
         isOpen={isOpen}
         placement="right"
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          refetchAllGroups();
+        }}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
@@ -83,19 +92,24 @@ function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
           <DrawerHeader>
             {groupName ? groupName : 'Group'} settings
           </DrawerHeader>
-
           <DrawerBody>
             <SettingsBody groupId={groupId} />
           </DrawerBody>
-
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                onClose();
+                refetchAllGroups();
+              }}
+            >
               Close
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </SettingsDrawerContext.Provider>
+    </>
   );
 }
 
@@ -119,7 +133,7 @@ function StandardSettings({ groupId }: GroupProps) {
     <>
       <Heading fontSize={'md'}>Settings</Heading>
       <Divider />
-      <LeaveGroup groupid={groupId} />
+      <LeaveGroup groupId={groupId} />
     </>
   );
 }

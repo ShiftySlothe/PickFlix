@@ -9,7 +9,7 @@ import { Divider, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { trpc } from '../../../server/utils/trpc';
-import { GroupProps, SettingsDrawerContext } from './Group';
+import { GroupProps, useRefetchGroupContext } from './Group';
 import { useToast } from '@chakra-ui/react';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { User } from '.prisma/client';
@@ -17,8 +17,8 @@ import { Avatar } from '@chakra-ui/avatar';
 import { HiUserRemove, HiUserAdd } from 'react-icons/hi';
 import { GrUserAdmin } from 'react-icons/gr';
 import { Tooltip } from '@chakra-ui/tooltip';
-import { useSession } from 'next-auth/react';
 import { useContext, useState } from 'react';
+import { useRefetchAllGroupsContext } from '../Groups';
 
 export default function AdminSettings({ groupId }: GroupProps) {
   return (
@@ -26,8 +26,8 @@ export default function AdminSettings({ groupId }: GroupProps) {
       <Heading fontSize={'md'}>Admin Settings</Heading>
       <Divider />
       <ChangeGroupNameForm groupId={groupId} />
-      <UpdateMembers groupId={groupId} />
-      <InviteNewUsers groupId={groupId} />
+      {/* <UpdateMembers groupId={groupId} />
+      <InviteNewUsers groupId={groupId} /> */}
     </>
   );
 }
@@ -35,12 +35,19 @@ export default function AdminSettings({ groupId }: GroupProps) {
 function ChangeGroupNameForm({ groupId }: GroupProps) {
   const nameMutation = trpc.useMutation('group.updateGroupName');
   const toast = useToast();
+  const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
+  const { refetch: refetchGroup } = useRefetchGroupContext();
   return (
     <Formik
       initialValues={{ name: '' }}
       onSubmit={async (values, actions) => {
         const newName = values.name;
-        const mutation = await nameMutation.mutateAsync({ groupId, newName });
+        const mutation = await nameMutation.mutateAsync({
+          groupId,
+          newName,
+        });
+        refetchGroup();
+        refetchAllGroups();
         if (mutation.name === newName) {
           toast({
             title: 'Name updated.',
@@ -242,7 +249,6 @@ function InviteNewUsers({ groupId }: GroupProps) {
 // TODO Add an are you sure modal
 // use Context to get the sidebar to close on click
 function DeleteGroup({ groupId }: GroupProps) {
-  const useClose = useContext(SettingsDrawerContext);
   const deleteMutation = trpc.useMutation('group.delete');
   const toast = useToast();
   const onClick = async () => {
@@ -253,7 +259,6 @@ function DeleteGroup({ groupId }: GroupProps) {
       isClosable: true,
     });
     await deleteMutation.mutateAsync({ groupId });
-    useClose(); //eslint-disable
   };
   return (
     <>
