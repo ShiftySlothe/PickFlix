@@ -46,3 +46,5 @@ BUGS:
 
 
     Schema change all ID to Id
+
+    No genres Found on sign up screen 1

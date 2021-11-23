@@ -1,6 +1,7 @@
 import prisma from './prisma';
 import { top250Movies } from '../../data/top250movies';
 import { top250TV } from '../../data/top250TV';
+import { genres } from '../server/db';
 
 export async function add250Movies() {
   const data = top250Movies.map((m) => {
@@ -18,4 +19,11 @@ export async function add250TV() {
   });
 
   await prisma.tVShow.createMany({ data });
+}
+
+export async function addGenres() {
+  const data = genres;
+  await prisma.genre.createMany({
+    data,
+  });
 }

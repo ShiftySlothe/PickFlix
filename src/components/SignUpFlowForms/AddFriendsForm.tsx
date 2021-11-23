@@ -7,12 +7,14 @@ import { Box, Flex, Text } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
 import { AddFriendField } from './components/AddFriendField';
 import { DetailsFormProgress } from '../../lib/enums';
+import { useSession } from 'next-auth/react';
 
 interface FormProps {
   setFormProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function AddFriendsForm({ setFormProgress }: FormProps) {
+  const { data: session, status } = useSession();
   const [usernameQ, setUsernameQ] = useState('');
   const handleChange = (e: any) => setUsernameQ(e.target.value);
   const userMatchQuery = trpc.useQuery([
@@ -44,13 +46,15 @@ export function AddFriendsForm({ setFormProgress }: FormProps) {
         {usernameQ && (
           <Flex flexDir="column">
             {userMatches && userMatches.length ? (
-              userMatches.map((user) => (
-                <AddFriendField
-                  user={user}
-                  key={user.id}
-                  setIsAddingUser={setIsAddingUser}
-                />
-              ))
+              userMatches
+                .filter((user) => user.id !== session?.user?.id)
+                .map((user) => (
+                  <AddFriendField
+                    user={user}
+                    key={user.id}
+                    setIsAddingUser={setIsAddingUser}
+                  />
+                ))
             ) : (
               <Box>
                 <Text>No users found</Text>

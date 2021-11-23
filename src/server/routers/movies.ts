@@ -1,8 +1,9 @@
 import { createRouter } from '../createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { add250Movies, add250TV } from '../../lib/addToDb';
+import { add250Movies, add250TV, addGenres } from '../../lib/addToDb';
 import { genres } from '../db';
+
 export const moviesRouter = createRouter()
   .query('get10FromIndex', {
     input: z
@@ -49,6 +50,13 @@ export const moviesRouter = createRouter()
         ],
       });
       return genres;
+    },
+  })
+  .mutation('addTop250', {
+    async resolve() {
+      // await add250TV();
+      // await add250Movies();
+      // await addGenres();
     },
   });
 
