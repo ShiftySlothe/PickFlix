@@ -9,7 +9,7 @@ import {
   useColorModeValue,
   Button,
 } from '@chakra-ui/react';
-import Groups from '../../components/Groups/Groups';
+import Groups from '../../components/Groups';
 
 export default function CenteredTest() {
   return (

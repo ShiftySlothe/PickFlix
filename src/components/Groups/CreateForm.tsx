@@ -14,6 +14,7 @@ import { useToast } from '@chakra-ui/toast';
 import * as Yup from 'yup';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import { AddIcon } from '@chakra-ui/icons';
+import Member from './Group/Settings/Admin/Member';
 
 export default function CreateGroupForm() {
   const [group, setGroup] = useState<UserGroup | null>(null);
@@ -77,12 +78,14 @@ function CreateGroup({ setGroup }: CreateGroupFormProps) {
                     type="text"
                     id="name"
                     disabled={formSubmitted}
+                    my={1}
                   ></Input>
                   <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                   <Button
                     type="submit"
                     isLoading={props.isSubmitting}
                     disabled={formSubmitted}
+                    my={1}
                   >
                     {formSubmitted ? 'Created' : 'Create group'}
                   </Button>
@@ -111,7 +114,7 @@ export function AddFriendsToGroupForm({ group }: AddFriendsToGroupFormProps) {
     <>
       {addedUsers.length > 0 && <FormLabel>Added friends</FormLabel>}
       {addedUsers.map((user) => (
-        <Text key={user.id}>{user.userName}</Text>
+        <Member key={user.id} user={user} groupId={group.id} />
       ))}
       <FormControl id="friendSearch">
         <FormLabel htmlFor="friendSearch">Add friends</FormLabel>

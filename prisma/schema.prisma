@@ -119,7 +119,7 @@ model userGroupLikes {
   userID      String
   user        User      @relation(fields: [userID], references: [id])
   userGroupID Int
-  userGroup   UserGroup @relation(fields: [userGroupID], references: [id])
+  userGroup   UserGroup @relation(fields: [userGroupID], references: [id], onDelete: Cascade)
   movies      Movie[]   @relation(references: [id])
   tvShows     TVShow[]  @relation(references: [id])
   liked       Boolean
@@ -147,7 +147,7 @@ model UserGroupRequests {
   id          Int       @id @default(autoincrement())
   sender      User      @relation(fields: [senderId], references: [id], name: "groupRequestRecipient")
   recipient   User      @relation(fields: [recipientId], references: [id], name: "groupRequestSender")
-  userGroup   UserGroup @relation(fields: [userGroupId], references: [id], name: "invites")
+  userGroup   UserGroup @relation(fields: [userGroupId], references: [id], name: "invites", onDelete: Cascade)
   accepted    Boolean?
   senderId    String
   recipientId String

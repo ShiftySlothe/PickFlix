@@ -23,6 +23,26 @@ export const userRouter = createRouter()
       return users;
     },
   })
+  .query('findOthersByUsername', {
+    input: Yup.object({
+      usernameQuery: Yup.string().required(),
+    }),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const users = await ctx.prisma.user.findMany({
+        where: {
+          AND: [
+            { userName: { contains: input.usernameQuery } },
+            { id: { not: ctx?.session?.user.id } },
+          ],
+        },
+      });
+
+      console.log(ctx?.session?.user.id);
+      console.log(users);
+      return users;
+    },
+  })
   .query('getUserFromSession', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);

@@ -1,7 +1,6 @@
 import { Avatar } from '@chakra-ui/avatar';
 import { Button, IconButton } from '@chakra-ui/button';
-import { Box, Divider, Flex, Heading, Text } from '@chakra-ui/layout';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { Box, Flex, Text } from '@chakra-ui/layout';
 import { AiOutlineLike } from 'react-icons/ai';
 import { trpc } from '../../../server/utils/trpc';
 import { Skeleton } from '@chakra-ui/skeleton';
@@ -16,11 +15,11 @@ import {
   DrawerOverlay,
 } from '@chakra-ui/modal';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { createContext, useRef } from 'react';
-import { FormControl } from '@chakra-ui/form-control';
-import AdminSettings from './AdminSettings';
-import { RefetchContext, useRefetchAllGroupsContext } from '../Groups';
+import { useRef } from 'react';
 import { createGenericContext } from '../../../lib/createGenericContext';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { RefetchContext } from '../../../lib/types';
+import { GroupSettings } from './Settings';
 
 export interface GroupProps {
   groupId: number;
@@ -41,7 +40,7 @@ export default function Group({ groupId }: GroupProps) {
         alignItems="center"
         border="2px"
         borderColor="grey"
-        borderRadius="4px"
+        borderRadius="2px"
         boxShadow={'lg'}
       >
         <Avatar name={data?.name} m={3} />
@@ -52,6 +51,13 @@ export default function Group({ groupId }: GroupProps) {
           <RefetchGroupContextProvider value={{ refetch: nameQuery.refetch }}>
             <GroupLikes groupId={groupId} />
             <GroupSettings groupId={groupId} groupName={data?.name} />
+            <Tooltip label="More info" placement="top">
+              <IconButton
+                icon={<HamburgerIcon />}
+                aria-label="More info"
+                ml={1}
+              />
+            </Tooltip>
           </RefetchGroupContextProvider>
         </Box>
       </Flex>
@@ -59,88 +65,6 @@ export default function Group({ groupId }: GroupProps) {
   );
 }
 
-interface GroupSettingsProps extends GroupProps {
-  groupName: string | undefined;
-}
-function GroupSettings({ groupId, groupName }: GroupSettingsProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
-  return (
-    <>
-      <Tooltip label="Settings" placement="top">
-        <IconButton
-          aria-label="Group settings"
-          icon={<HamburgerIcon />}
-          onClick={onOpen}
-          ref={btnRef}
-          ml={1}
-        />
-      </Tooltip>
-      <Drawer
-        isOpen={isOpen}
-        placement="right"
-        onClose={() => {
-          onClose();
-          refetchAllGroups();
-        }}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>
-            {groupName ? groupName : 'Group'} settings
-          </DrawerHeader>
-          <DrawerBody>
-            <SettingsBody groupId={groupId} />
-          </DrawerBody>
-          <DrawerFooter>
-            <Button
-              variant="outline"
-              mr={3}
-              onClick={() => {
-                onClose();
-                refetchAllGroups();
-              }}
-            >
-              Close
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
-}
-
-function SettingsBody({ groupId }: GroupProps) {
-  const adminQuery = trpc.useQuery([
-    'group.isGroupAdminFromSession',
-    { groupId },
-  ]);
-  const isAdmin = adminQuery.data;
-
-  return (
-    <Skeleton isLoaded={adminQuery.isSuccess}>
-      {isAdmin && <AdminSettings groupId={groupId} />}
-      <StandardSettings groupId={groupId} />
-    </Skeleton>
-  );
-}
-
-function StandardSettings({ groupId }: GroupProps) {
-  return (
-    <>
-      <Heading fontSize={'md'}>Settings</Heading>
-      <Divider />
-      <LeaveGroup groupId={groupId} />
-    </>
-  );
-}
-
-function LeaveGroup({ groupId }: GroupProps) {
-  return <div>Leave Group</div>;
-}
 function GroupLikes({ groupId }: GroupProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);

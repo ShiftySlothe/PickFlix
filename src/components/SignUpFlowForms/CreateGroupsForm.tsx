@@ -11,9 +11,9 @@ import {
   ModalOverlay,
 } from '@chakra-ui/modal';
 import { Button } from '@chakra-ui/button';
-import CreateGroupForm from '../Groups/CreateGroupsForm';
+import CreateGroupForm from '../Groups/CreateForm';
 import { DetailsFormProgress } from '../../lib/enums';
-import UpdateGroupForm from '../Groups/UpdateGroupsForm';
+import UpdateGroupForm from '../Groups/UpdateForm';
 
 interface FormProps {
   setFormProgress: React.Dispatch<React.SetStateAction<number>>;

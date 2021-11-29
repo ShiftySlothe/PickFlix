@@ -1,6 +1,7 @@
 CURRENT:
 
 Need to review routers to ensure we're not sending sensitive data to the client
+- Perhaps make a UI USER Type which just has the core data needed for UI elements (userName, Image etc)
 
 
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
@@ -9,7 +10,8 @@ Need to review routers to ensure we're not sending sensitive data to the client
 4) ADD GROUPS
 5) GET LIKES WORKING 
 6) INTERGRATE TMDB CATEGORIES ETC
--
+7) Abstract UI components for reuse
+
 
 Create groups ->
 

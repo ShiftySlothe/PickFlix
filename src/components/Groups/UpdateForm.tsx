@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/modal';
 import { UseQueryResult } from 'react-query';
 import { trpc } from '../../server/utils/trpc';
-import { AddFriendsToGroupForm } from './CreateGroupsForm';
+import { AddFriendsToGroupForm } from './CreateForm';
 
 interface UpdateGroupFormProps {
   group: UserGroup;
