@@ -573,6 +573,29 @@ export const groupRouter = createRouter()
 
       return removed;
     },
+  })
+  .mutation('removeUserFromGroupWithSession', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+
+      const removed = await ctx.prisma.userGroup.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          users: {
+            disconnect: {
+              id: ctx?.session?.user.id,
+            },
+          },
+        },
+      });
+
+      return removed;
+    },
   });
 
 function findSharedGenreIds(
