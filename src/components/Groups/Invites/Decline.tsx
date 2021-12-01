@@ -1,5 +1,5 @@
 import { IconButton } from '@chakra-ui/button';
-import { CheckIcon } from '@chakra-ui/icons';
+import { CloseIcon } from '@chakra-ui/icons';
 import { Tooltip } from '@chakra-ui/tooltip';
 import { trpc } from '../../../server/utils/trpc';
 import React from 'react';
@@ -11,24 +11,24 @@ export default function Accept({ invite }: GroupInvitationProps) {
   const acceptMutation = trpc.useMutation('group.acceptRequestBySession');
   const toast = useToast();
   const { refetch } = useRefetchAllInvitesContext();
-  const acceptInvite = async () => {
+  const declineInvite = async () => {
     await acceptMutation.mutateAsync({ groupId: invite.userGroup.id });
     toast({
-      title: 'Request accepted',
-      status: 'success',
+      title: 'Request declined',
+      status: 'error',
       duration: 4500,
       isClosable: true,
     });
     refetch();
   };
   return (
-    <Tooltip label="Accept" placement="top">
+    <Tooltip label="Decline" placement="top">
       <IconButton
-        aria-label="Accept request"
-        icon={<CheckIcon />}
+        aria-label="Decline request"
+        icon={<CloseIcon />}
         size={'sm'}
         ml={1}
-        onClick={acceptInvite}
+        onClick={declineInvite}
       />
     </Tooltip>
   );

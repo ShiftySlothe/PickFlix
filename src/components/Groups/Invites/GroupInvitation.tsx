@@ -1,11 +1,12 @@
 import { UserGroup, UserGroupRequests } from '.prisma/client';
 import { Avatar } from '@chakra-ui/avatar';
 import { IconButton } from '@chakra-ui/button';
-import { CheckIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { Flex, Text } from '@chakra-ui/layout';
 import { Tooltip } from '@chakra-ui/tooltip';
-
-interface GroupInvitationProps {
+import Accept from './Accept';
+import Decline from './Decline';
+export interface GroupInvitationProps {
   invite: UserGroupRequests & {
     sender: {
       name: string | null;
@@ -44,22 +45,8 @@ export function GroupInvitation({ invite }: GroupInvitationProps) {
           ml={1}
         />
       </Tooltip>
-      <Tooltip label="Accept" placement="top">
-        <IconButton
-          aria-label="Accept request"
-          icon={<CheckIcon />}
-          size={'sm'}
-          ml={1}
-        />
-      </Tooltip>
-      <Tooltip label="Decline" placement="top">
-        <IconButton
-          aria-label="Decline request"
-          icon={<CloseIcon />}
-          size={'sm'}
-          ml={1}
-        />
-      </Tooltip>
+      <Accept invite={invite} />
+      <Decline invite={invite} />
     </Flex>
   );
 }

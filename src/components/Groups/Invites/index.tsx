@@ -16,16 +16,21 @@ import {
 } from '@chakra-ui/modal';
 import { Text } from '@chakra-ui/layout';
 import { GroupInvitation } from './GroupInvitation';
+import { createGenericContext } from '../../../lib/createGenericContext';
+import { RefetchContext } from '../../../lib/types';
+
+export const [useRefetchAllInvitesContext, RefetchAllInvitesContextProvider] =
+  createGenericContext<RefetchContext>();
 
 export function GroupInvites() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
   const invitesQuery = trpc.useQuery(['group.getInvitesFromSession']);
-
+  const refetch = invitesQuery.refetch;
   const invites = invitesQuery.data;
   const { refetch: refetchAllGroups } = useRefetchAllGroupsContext();
   return (
-    <>
+    <RefetchAllInvitesContextProvider value={{ refetch }}>
       <Tooltip label="Invites" placement="top">
         <IconButton
           aria-label="Group invites"
@@ -72,6 +77,6 @@ export function GroupInvites() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </>
+    </RefetchAllInvitesContextProvider>
   );
 }

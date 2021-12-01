@@ -121,6 +121,7 @@ export const groupRouter = createRouter()
       const invites = await ctx.prisma.userGroupRequests.findMany({
         where: {
           recipientId: ctx.session?.user?.id,
+          accepted: null,
         },
         include: {
           sender: {
