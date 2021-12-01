@@ -56,6 +56,19 @@ export const friendRouter = createRouter()
       return friendRequests;
     },
   })
+  .query('getAllFriendsFromSession', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+      const friends = await ctx.prisma.friendRequests.findMany({
+        where: {
+          OR: [
+            { senderId: ctx?.session?.user?.id, accepted: true },
+            { recipientId: ctx?.session?.user?.id, accepted: true },
+          ],
+        },
+      });
+    },
+  })
   .mutation('sendRequest', {
     input: Yup.object({ recipientId: Yup.string().required() }).required(),
     async resolve({ ctx, input }) {
@@ -104,7 +117,7 @@ export const friendRouter = createRouter()
         });
       }
 
-      const accepted = await ctx.prisma.friendRequests.updateMany({
+      const acceptedRequest = await ctx.prisma.friendRequests.updateMany({
         where: {
           senderId: input.senderId,
           recipientId: ctx?.session?.user.id,
@@ -114,7 +127,20 @@ export const friendRouter = createRouter()
         },
       });
 
-      return accepted;
+      const addded = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          friends: {
+            connect: {
+              id: input.senderId,
+            },
+          },
+        },
+      });
+
+      return added;
     },
   })
   .mutation('declineRequest', {
@@ -164,5 +190,26 @@ export const friendRouter = createRouter()
       });
 
       return deletion;
+    },
+  })
+  .mutation('removeFriend', {
+    input: Yup.object({
+      friendId: Yup.string().required(),
+    }),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const removed = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          friends: {
+            disconnect: {
+              id: input.friendId,
+            },
+          },
+        },
+      });
+      return;
     },
   });

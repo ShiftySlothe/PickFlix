@@ -9,6 +9,7 @@ import {
   useColorModeValue,
   Button,
 } from '@chakra-ui/react';
+import Friends from '../../components/Friends';
 import Groups from '../../components/Groups';
 
 export default function CenteredTest() {
@@ -29,7 +30,7 @@ export default function CenteredTest() {
           boxShadow={'lg'}
           p={8}
         >
-          <Groups />
+          <Friends />
         </Center>
       </Stack>
     </Flex>

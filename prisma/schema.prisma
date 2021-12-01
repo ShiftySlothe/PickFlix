@@ -48,6 +48,7 @@ model User {
   sessions       Session[]
   userGroups     UserGroup[]      @relation(references: [id], name: "groupMembers")
   userLikes      userGroupLikes[]
+  friends        User[]           @relation("UserFriends")
   newUser        Boolean          @default(true)
   preferedGenres Genre[]
   activeGroup    UserGroup?       @relation(name: "groupOwner", references: [id], fields: [userGroupId])
@@ -60,6 +61,7 @@ model User {
   sentGroupRequests      UserGroupRequests[] @relation("groupRequestSender")
   UserGroup              UserGroup[]
   userGroupId            Int?
+  User                   User?               @relation("UserFriends", fields: [userId], references: [id])
   @@map(name: "users")
 }
 

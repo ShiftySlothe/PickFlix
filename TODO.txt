@@ -2,7 +2,8 @@ CURRENT:
 
 Need to review routers to ensure we're not sending sensitive data to the client
 - Perhaps make a UI USER Type which just has the core data needed for UI elements (userName, Image etc)
-
+- Friends is broken, I should add a friend to a sub table of friends when a request is accepted, not add them if declined and have a method to remove them once accepted. 
+- This is also true for groups.
 
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
 2) ADD CUSTOM DOMAIN FROM GODADDY - DONE
