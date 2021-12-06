@@ -105,7 +105,7 @@ export function AddFriendsToGroupForm({ group }: AddFriendsToGroupFormProps) {
   const [usernameQ, setUsernameQ] = useState('');
   const handleChange = (e: any) => setUsernameQ(e.target.value);
   const userFriendRequestsQuery = trpc.useQuery([
-    'friend.getRequestsFromSession',
+    'friend.getSentRequestsFromSession',
   ]);
   const friendRequests = userFriendRequestsQuery.data;
   const [isAddingUser, setIsAddingUser] = useState(false);

@@ -33,7 +33,7 @@ export const friendRouter = createRouter()
       return noData;
     },
   })
-  .query('getRequestsFromSession', {
+  .query('getSentRequestsFromSession', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
 
@@ -56,17 +56,44 @@ export const friendRouter = createRouter()
       return friendRequests;
     },
   })
-  .query('getAllFriendsFromSession', {
+  .query('getPendingRequestsFromSession', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
-      const friends = await ctx.prisma.friendRequests.findMany({
+
+      // Find user details from friend requests
+      const friendRequests = await ctx.prisma.friendRequests.findMany({
         where: {
-          OR: [
-            { senderId: ctx?.session?.user?.id, accepted: true },
-            { recipientId: ctx?.session?.user?.id, accepted: true },
-          ],
+          recipientId: ctx?.session?.user?.id,
+          accepted: null,
+        },
+        select: {
+          sender: {
+            select: {
+              id: true,
+              userName: true,
+              image: true,
+            },
+          },
         },
       });
+
+      return friendRequests;
+    },
+  })
+  .query('getAllFriendsFromSession', {
+    async resolve({ ctx }) {
+      // checkLoggedIn(ctx);
+
+      const friends = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        select: {
+          friends: true,
+        },
+      });
+
+      return friends?.friends;
     },
   })
   .mutation('sendRequest', {
@@ -127,7 +154,7 @@ export const friendRouter = createRouter()
         },
       });
 
-      const addded = await ctx.prisma.user.update({
+      const added = await ctx.prisma.user.update({
         where: {
           id: ctx?.session?.user.id,
         },
@@ -198,7 +225,7 @@ export const friendRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
-      const removed = await ctx.prisma.user.update({
+      const removedUserSide = await ctx.prisma.user.update({
         where: {
           id: ctx?.session?.user.id,
         },
@@ -208,6 +235,34 @@ export const friendRouter = createRouter()
               id: input.friendId,
             },
           },
+        },
+      });
+
+      const removedFriendSide = await ctx.prisma.user.update({
+        where: {
+          id: input.friendId,
+        },
+        data: {
+          friends: {
+            disconnect: {
+              id: input.friendId,
+            },
+          },
+        },
+      });
+
+      const deleteRequest = await ctx.prisma.friendRequests.deleteMany({
+        where: {
+          OR: [
+            {
+              recipientId: input.friendId,
+              senderId: ctx?.session?.user.id,
+            },
+            {
+              recipientId: ctx?.session?.user.id,
+              senderId: input.friendId,
+            },
+          ],
         },
       });
       return;

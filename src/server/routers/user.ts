@@ -43,6 +43,31 @@ export const userRouter = createRouter()
       return users;
     },
   })
+  .query('findNewFriendsByUsername', {
+    input: Yup.object({
+      usernameQuery: Yup.string().required(),
+    }),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const users = await ctx.prisma.user.findMany({
+        where: {
+          AND: [
+            { userName: { contains: input.usernameQuery } },
+            { id: { not: ctx?.session?.user.id } },
+            {
+              friends: {
+                none: {
+                  id: ctx?.session?.user.id,
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      return users;
+    },
+  })
   .query('getUserFromSession', {
     async resolve({ ctx }) {
       checkLoggedIn(ctx);

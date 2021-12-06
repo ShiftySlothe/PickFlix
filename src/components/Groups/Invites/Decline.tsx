@@ -7,8 +7,8 @@ import { GroupInvitationProps } from './GroupInvitation';
 import { useToast } from '@chakra-ui/toast';
 import { useRefetchAllInvitesContext } from '.';
 
-export default function Accept({ invite }: GroupInvitationProps) {
-  const acceptMutation = trpc.useMutation('group.acceptRequestBySession');
+export default function Decline({ invite }: GroupInvitationProps) {
+  const acceptMutation = trpc.useMutation('group.declineRequestBySession');
   const toast = useToast();
   const { refetch } = useRefetchAllInvitesContext();
   const declineInvite = async () => {

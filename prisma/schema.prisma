@@ -61,7 +61,8 @@ model User {
   sentGroupRequests      UserGroupRequests[] @relation("groupRequestSender")
   UserGroup              UserGroup[]
   userGroupId            Int?
-  User                   User?               @relation("UserFriends", fields: [userId], references: [id])
+  User                   User[]              @relation("UserFriends", fields: [userId], references: [id])
+
   @@map(name: "users")
 }
 
