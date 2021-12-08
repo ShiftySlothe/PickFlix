@@ -259,6 +259,43 @@ export const groupRouter = createRouter()
       return !!isAdmin;
     },
   })
+  .query('getActiveGroup', {
+    async resolve({ ctx }) {
+      checkLoggedIn(ctx);
+      const activeGroup = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        select: {
+          activeGroup: true,
+        },
+      });
+
+      return activeGroup;
+    },
+  })
+  .mutation('setActiveGroup', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      checkLoggedIn(ctx);
+      const activeGroup = await ctx.prisma.user.update({
+        where: {
+          id: ctx?.session?.user.id,
+        },
+        data: {
+          activeGroup: {
+            connect: {
+              id: input.groupId,
+            },
+          },
+        },
+      });
+
+      return activeGroup;
+    },
+  })
   .mutation('createUserGroup', {
     input: Yup.object({
       name: Yup.string().required(),

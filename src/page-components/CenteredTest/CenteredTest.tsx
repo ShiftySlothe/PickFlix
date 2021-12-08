@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import Friends from '../../components/Friends';
 import Groups from '../../components/Groups';
+import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
 
 export default function CenteredTest() {
   return (
@@ -30,7 +31,7 @@ export default function CenteredTest() {
           boxShadow={'lg'}
           p={8}
         >
-          <Friends />
+          <TinderCardsPage />
         </Center>
       </Stack>
     </Flex>

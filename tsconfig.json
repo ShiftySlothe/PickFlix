@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -26,12 +22,9 @@
     "db.ts",
     "src/pages/auth/signin.ts",
     "src/pages/api/auth/providers.js",
-    "src/lib/prisma.ts"
+    "src/lib/prisma.ts",
+    "src/lib/addToDb.js"
   ],
-  "exclude": [
-    "node_modules"
-  ],
-  "types": [
-    "react-tinder-card"
-  ]
+  "exclude": ["node_modules"],
+  "types": ["react-tinder-card"]
 }
