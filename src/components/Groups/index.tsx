@@ -16,12 +16,12 @@ export default function Groups() {
   const refetch = groupsQuery.refetch;
 
   return (
-    <VStack minW="300px">
+    <VStack>
       <RefetchAllGroupsContextProvider value={{ refetch }}>
         <GroupsHeader />
         <Divider mb={2} />
         <Input placeholder="Search"></Input>
-        <Skeleton isLoaded={groupsQuery.isSuccess}>
+        <Skeleton isLoaded={groupsQuery.isSuccess} width={'100%'}>
           <VStack>
             {groups?.map((group) => (
               <Group groupId={group.id} key={group.id} />

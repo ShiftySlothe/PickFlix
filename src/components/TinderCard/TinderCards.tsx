@@ -2,18 +2,19 @@ import { Button, ButtonGroup } from '@chakra-ui/button';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/layout';
 import React, { useMemo, useState, useEffect } from 'react';
 import TinderCard, { API, Direction } from './react-tinder-card';
-import { Movie, User } from '.prisma/client';
+import { User } from '.prisma/client';
 import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
 import { useActiveGroupsContext } from '../../page-components/Dashboard/Dashboard';
 import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../Helpers/TRPC/useQueryWrapper';
 import Image from 'next/image';
+import { TMDBMovie, TMDBPosterSize } from '../../lib/types';
 interface TinderCardsProps {
-  movies: Movie[];
+  movies: TMDBMovie[];
 }
 
 const TinderCards = ({ movies: m }: TinderCardsProps) => {
-  const alreadyRemoved: Movie[] = [];
+  const alreadyRemoved: TMDBMovie[] = [];
   const [movies, setMovies] = useState(m);
   const [lastDirection, setLastDirection] = useState('');
   const [isRemoving, setisRemoving] = useState(false);
@@ -25,12 +26,12 @@ const TinderCards = ({ movies: m }: TinderCardsProps) => {
       .map((i) => React.createRef<API>());
   }, [m]);
 
-  const swiped = (direction: Direction, movie: Movie) => {
+  const swiped = (direction: Direction, movie: TMDBMovie) => {
     setLastDirection(direction);
     alreadyRemoved.push(movie);
   };
 
-  const outOfFrame = (movie: Movie) => {
+  const outOfFrame = (movie: TMDBMovie) => {
     let newMovieState = movies.filter((m) => m.id !== movie.id);
     newMovieState = newMovieState.filter((m) => !alreadyRemoved.includes(m));
     setMovies(newMovieState);
@@ -123,10 +124,9 @@ function CurrentGroupAvatar({ users, groupName }: CurrentGroupAvatarProps) {
   );
 }
 interface CardDetailsProps {
-  movie: Movie;
+  movie: TMDBMovie;
 }
 function CardDetails({ movie }: CardDetailsProps) {
-  movie.image;
   return (
     <>
       <Flex
@@ -143,10 +143,9 @@ function CardDetails({ movie }: CardDetailsProps) {
         boxShadow="lg"
       >
         <Image
-          src={movie.image}
+          src={`${process.env.TMDB_IMAGE_URL}/${TMDBPosterSize.w300}${movie.poster_path}`}
           alt={`Image for ${movie.title}`}
-          height="50%"
-          width="50%"
+          layout="fill"
         />
         <Heading p={2} fontSize="md">
           {movie.title}

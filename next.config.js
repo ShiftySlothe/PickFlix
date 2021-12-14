@@ -3,8 +3,9 @@ module.exports = {
   reactStrictMode: true,
   env: {
     BASE_URL: process.env.BASE_URL,
+    TMDB_IMAGE_URL: process.env.TMDB_IMAGE_URL,
   },
   images: {
-    domains: ['m.media-amazon.com'],
+    domains: ['image.tmdb.org'],
   },
 };

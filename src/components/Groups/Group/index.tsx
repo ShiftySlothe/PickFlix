@@ -32,16 +32,16 @@ export default function Group({ groupId }: GroupProps) {
   const nameQuery = trpc.useQuery(['group.getGroupName', { groupId: groupId }]);
   const data = nameQuery.data;
   return (
-    <Skeleton isLoaded={nameQuery.isSuccess}>
+    <Skeleton isLoaded={nameQuery.isSuccess} width={'100%'}>
       <Flex
         direction="row"
-        width="400px"
         justifyContent="space-between"
         alignItems="center"
         border="2px"
         borderColor="grey"
-        borderRadius="2px"
+        borderRadius="4px"
         boxShadow={'lg'}
+        width={'100%'}
       >
         <Avatar name={data?.name} m={3} />
         <Text m={1} isTruncated>

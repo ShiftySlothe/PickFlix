@@ -4,7 +4,7 @@ import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../Helpers/TRPC/useQueryWrapper';
 
 export default function TinderCardsPage() {
-  const movieQuery = trpc.useQuery(['movies.get10FromIndex', 1]);
+  const movieQuery = trpc.useQuery(['movies.get20MostPopular', { page: 1 }]);
   const { data } = movieQuery;
 
   return (

@@ -43,12 +43,12 @@ export default function Friends() {
   const refetch = friendsQuery.refetch;
 
   return (
-    <VStack minW="300px">
+    <VStack>
       <RefetchAllFriendsContextProvider value={{ refetch }}>
         <FriendsHeader />
         <Divider mb={2} />
         <Input placeholder="Search"></Input>
-        <Skeleton isLoaded={friendsQuery.isSuccess}>
+        <Skeleton isLoaded={friendsQuery.isSuccess} width="100%">
           <VStack>
             {friends?.map((friend) => (
               <Friend friend={friend} key={friend.id} />

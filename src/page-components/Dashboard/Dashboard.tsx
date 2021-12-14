@@ -4,7 +4,11 @@ import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../../components/Helpers/TRPC/useQueryWrapper';
 import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
 import { Heading } from '@chakra-ui/layout';
-import Centered from '../CenteredTest/CenteredTest';
+import { Text } from '@chakra-ui/react';
+import Rows from '../Layout/Rows';
+import Group from '../../components/Groups/Group';
+import Groups from '../../components/Groups';
+import Friends from '../../components/Friends';
 
 export const [useActiveGroupsContext, ActiveGroupsContextProvider] =
   createGenericContext<UserGroup>();
@@ -14,20 +18,37 @@ export default function Dashboard() {
   const { data } = activeGroupQuery;
 
   return (
-    <TRPCQueryWrapper query={activeGroupQuery}>
-      {data?.activeGroup ? (
-        <ActiveGroupsContextProvider value={data.activeGroup}>
-          <Centered>
+    <Rows>
+      <Groups />
+      <TRPCQueryWrapper query={activeGroupQuery}>
+        {data?.activeGroup ? (
+          <ActiveGroupsContextProvider value={data.activeGroup}>
             <TinderCardsPage />
-          </Centered>
-        </ActiveGroupsContextProvider>
-      ) : (
-        <NoActiveGroup />
-      )}
-    </TRPCQueryWrapper>
+          </ActiveGroupsContextProvider>
+        ) : (
+          <Rows>
+            <NoActiveGroup />
+          </Rows>
+        )}
+      </TRPCQueryWrapper>
+      <Friends />
+    </Rows>
   );
 }
 
 function NoActiveGroup() {
-  return <Heading>Must have an active group. TBI.</Heading>;
+  const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
+  const { data: allGroups } = allGroupsQuery;
+  const activeGroupMutation = trpc.useMutation;
+  return (
+    <TRPCQueryWrapper query={allGroupsQuery}>
+      <Heading size="md">Must have an active group.</Heading>
+      <Text>Select a group:</Text>
+      {allGroups ? (
+        allGroups.map((group, i) => <Group groupId={group.id} key={i} />)
+      ) : (
+        <Text>You&apos;re not in any groups yet.</Text>
+      )}
+    </TRPCQueryWrapper>
+  );
 }
