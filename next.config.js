@@ -4,4 +4,7 @@ module.exports = {
   env: {
     BASE_URL: process.env.BASE_URL,
   },
+  images: {
+    domains: ['m.media-amazon.com'],
+  },
 };

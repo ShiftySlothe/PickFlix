@@ -7,7 +7,7 @@ import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
 import { useActiveGroupsContext } from '../../page-components/Dashboard/Dashboard';
 import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../Helpers/TRPC/useQueryWrapper';
-
+import Image from 'next/image';
 interface TinderCardsProps {
   movies: Movie[];
 }
@@ -126,23 +126,32 @@ interface CardDetailsProps {
   movie: Movie;
 }
 function CardDetails({ movie }: CardDetailsProps) {
+  movie.image;
   return (
-    <Flex
-      position="relative"
-      backgroundColor="white"
-      backgroundSize="cover"
-      backgroundPosition="50%"
-      borderRadius="5px"
-      width="80vw"
-      maxW="260px"
-      h="300px"
-      alignItems="center"
-      justifyContent="center"
-      boxShadow="lg"
-    >
-      <Heading p={2} fontSize="md">
-        {movie.title}
-      </Heading>
-    </Flex>
+    <>
+      <Flex
+        position="relative"
+        backgroundColor="white"
+        backgroundSize="cover"
+        backgroundPosition="50%"
+        borderRadius="5px"
+        width="80vw"
+        maxW="256px"
+        h="352px"
+        alignItems="center"
+        justifyContent="center"
+        boxShadow="lg"
+      >
+        <Image
+          src={movie.image}
+          alt={`Image for ${movie.title}`}
+          height="50%"
+          width="50%"
+        />
+        <Heading p={2} fontSize="md">
+          {movie.title}
+        </Heading>
+      </Flex>
+    </>
   );
 }

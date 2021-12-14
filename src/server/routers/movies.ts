@@ -1,39 +1,31 @@
 import { createRouter } from '../createRouter';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { add250Movies, add250TV, addGenres } from '../../lib/addToDb';
-import { genres } from '../db';
+import axios from 'axios';
+import { TMDBMovieResponse } from '../../lib/types';
 
 export const moviesRouter = createRouter()
-  .query('get10FromIndex', {
-    input: z
-      .number({
-        required_error: 'Index is required',
-        invalid_type_error: 'Index must be a number',
-      })
-      .int({
-        message: 'Index must be an integer',
-      })
-      .positive({
-        message: 'Index must be positive',
-      })
-      .max(239, { message: "There's only 250 items, number too large" }),
+  .query('get20MostPopular', {
+    input: z.object({
+      page: z
+        .number({
+          required_error: 'Index is required',
+          invalid_type_error: 'Index must be a number',
+        })
+        .int({
+          message: 'Index must be an integer',
+        })
+        .positive({
+          message: 'Index must be positive',
+        })
+        .max(500, { message: "There's only 500 pages, number too large" }),
+    }),
+
     async resolve({ ctx, input }) {
-      const movieIDs = Array.from({ length: 10 }, (_, i) => input + i);
-      const movies = await ctx.prisma.movie.findMany({
-        where: {
-          id: {
-            in: movieIDs,
-          },
-        },
-      });
-      if (!movies) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `No movies found at index '${input}'`,
-        });
-      }
-      return movies;
+      const movies = await axios.get<TMDBMovieResponse>(
+        `${process.env.TMDB_BASE_URL}/movie/popular?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=${input.page}`,
+      );
+      return movies.data.results;
     },
   })
   .query('getAllGenres', {
@@ -50,13 +42,6 @@ export const moviesRouter = createRouter()
         ],
       });
       return genres;
-    },
-  })
-  .mutation('addTop250', {
-    async resolve() {
-      // await add250TV();
-      // await add250Movies();
-      // await addGenres();
     },
   });
 

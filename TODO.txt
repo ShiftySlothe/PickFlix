@@ -5,6 +5,9 @@ Need to review routers to ensure we're not sending sensitive data to the client
 - Friends is broken, I should add a friend to a sub table of friends when a request is accepted, not add them if declined and have a method to remove them once accepted. 
 - This is also true for groups.
 
+
+- Will need to add a job that runs to check for changes to IDs (names to not change, so could do a check there and then run the check)
+
 1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
 2) ADD CUSTOM DOMAIN FROM GODADDY - DONE
 3) ADD NEW USER SIGN UP FLOW  
@@ -51,3 +54,13 @@ BUGS:
     Schema change all ID to Id
 
     No genres Found on sign up screen 1
+
+
+Questions for Rob:
+
+So, now I'm using the API, I want TRPC to do the client side stuff, but I want a second server to do some checks on the DB. True backend gubbins.
+The checks will be 1) Does the 
+
+Actually no, I only need to check and add an item if it has been liked. Much less effort. 
+
+We still might need something like this to run regular jobs to check IDs have not changed. This will be implemented later.
