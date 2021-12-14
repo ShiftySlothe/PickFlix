@@ -1,14 +1,16 @@
 import { UseQueryResult } from 'react-query';
 import NextError from 'next/error';
+import { AppRouter } from '../../../server/routers/_app';
+import { TRPCClientError, TRPCClientErrorLike } from '@trpc/client';
 
-interface TRPCQueryWrapperProps {
-  query: UseQueryResult;
+interface TRPCQueryWrapperProps<T> {
+  query: UseQueryResult<T, TRPCClientErrorLike<AppRouter>>;
 }
 
-export default function TRPCQueryWrapper({
+export default function TRPCQueryWrapper<T>({
   query,
   children,
-}: React.PropsWithChildren<TRPCQueryWrapperProps>) {
+}: React.PropsWithChildren<TRPCQueryWrapperProps<T>>) {
   if (query.isError) {
     return (
       <NextError
@@ -21,7 +23,7 @@ export default function TRPCQueryWrapper({
     return <>Loading...</>;
   }
   if (!query.data) {
-    return <NextError title={'No users found'} statusCode={404} />;
+    return <NextError title={'No data found'} statusCode={404} />;
   }
 
   return <>{children}</>;

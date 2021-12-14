@@ -13,7 +13,9 @@ import Friends from '../../components/Friends';
 import Groups from '../../components/Groups';
 import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
 
-export default function CenteredTest() {
+export default function Centered({
+  children,
+}: React.PropsWithChildren<Record<string, unknown>>) {
   return (
     <Flex
       minH={'100vh'}
@@ -31,7 +33,7 @@ export default function CenteredTest() {
           boxShadow={'lg'}
           p={8}
         >
-          <TinderCardsPage />
+          {children}
         </Center>
       </Stack>
     </Flex>

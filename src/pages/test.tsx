@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import CenteredTest from '../page-components/CenteredTest/CenteredTest';
+import Centered from '../page-components/CenteredTest/CenteredTest';
 
 const Test: NextPage = () => {
-  return <CenteredTest />;
+  return <Centered />;
 };
 
 export default Test;
