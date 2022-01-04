@@ -4,8 +4,9 @@ import React, { useMemo, useState } from 'react';
 import TinderCard, { API, Direction } from '../react-tinder-card';
 import { TMDBMovie } from '../../../lib/types';
 import CardDetails from './CardDetails';
-import CurrentGroup from '../CurrentGroup';
 import { trpc } from '../../../server/utils/trpc';
+import { useToast } from '@chakra-ui/react';
+import { useActiveGroupsContext } from '../../../page-components/Dashboard/Dashboard';
 interface TinderCardsProps {
   movies: TMDBMovie[];
   refetch: () => void;
@@ -16,7 +17,10 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
   const [movies, setMovies] = useState(m);
   const [lastDirection, setLastDirection] = useState('');
   const [isRemoving, setisRemoving] = useState(false);
-  const likeMutation = trpc.useMutation('groupLikes.');
+  const likeMutation = trpc.useMutation('groupLikes.userLikesShow');
+  const dislikeMutation = trpc.useMutation('groupLikes.userDislikesShow');
+  const toast = useToast();
+  const activeGroup = useActiveGroupsContext();
   // Create refs for each movie
   const childRefs = useMemo(() => {
     return Array(m.length)
@@ -24,9 +28,35 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
       .map((i) => React.createRef<API>());
   }, [m]);
 
-  const swiped = (direction: Direction, movie: TMDBMovie) => {
+  const swiped = async (direction: Direction, movie: TMDBMovie) => {
     setLastDirection(direction);
     alreadyRemoved.push(movie);
+    if (direction === 'down' || direction === 'up') {
+      toast({
+        title: 'Error',
+        description: 'You can only swipe left or right!',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } else if (direction === 'left') {
+      dislikeMutation.mutate({ showId: movie.id, groupId: activeGroup.id });
+    } else if (direction === 'right') {
+      const match = await likeMutation.mutateAsync({
+        showId: movie.id,
+        groupId: activeGroup.id,
+      });
+
+      if (match) {
+        toast({
+          title: 'Match',
+          description: "It's a match!",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   const outOfFrame = (movie: TMDBMovie) => {

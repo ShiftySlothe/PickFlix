@@ -4,12 +4,14 @@ import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../Helpers/TRPC/useQueryWrapper';
 import { VStack } from '@chakra-ui/react';
 import CurrentGroup from './CurrentGroup';
+import { useActiveGroupsContext } from '../../page-components/Dashboard/Dashboard';
 
 export default function TinderCardsPage() {
   const [queryIndex, setQueryIndex] = useState(1);
+  const activeGroup = useActiveGroupsContext();
   const movieQuery = trpc.useQuery([
     'movies.get20MostPopular',
-    { page: queryIndex },
+    { page: queryIndex, groupId: activeGroup.id },
   ]);
   const { data } = movieQuery;
 

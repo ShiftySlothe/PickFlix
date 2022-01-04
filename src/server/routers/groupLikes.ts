@@ -26,7 +26,7 @@ export const groupLikesRouter = createRouter()
       });
 
       if (likedAlready) {
-        return likedAlready;
+        return false;
       }
 
       const like = await ctx.prisma.userGroupLikes.create({
@@ -81,9 +81,9 @@ export const groupLikesRouter = createRouter()
             },
           },
         });
-        return newMatch;
+        return true;
       } else {
-        return like;
+        return false;
       }
     },
   })

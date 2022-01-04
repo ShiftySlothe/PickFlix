@@ -136,7 +136,7 @@ export type TMDBMovie = {
   budget?: number;
   genres?: TMDBGenre;
   homepage?: string | null;
-  id?: number;
+  id: number;
   imdb_id?: string | null;
   original_language?: string;
   original_title?: string;
@@ -164,7 +164,7 @@ export type TMDBTVShow = {
   first_air_date?: string;
   genres?: TMDBGenre[];
   homepage?: string;
-  id?: number;
+  id: number;
   in_production?: boolean;
   languages?: TMDBLanguage[];
   last_air_date?: string;
