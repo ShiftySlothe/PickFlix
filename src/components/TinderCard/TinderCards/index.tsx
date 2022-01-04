@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@chakra-ui/button';
-import { Box, Flex, VStack } from '@chakra-ui/layout';
+import { Box, Flex, Heading } from '@chakra-ui/layout';
 import React, { useMemo, useState } from 'react';
 import TinderCard, { API, Direction } from '../react-tinder-card';
 import { TMDBMovie } from '../../../lib/types';
@@ -83,12 +83,17 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
   };
 
   return (
-    <Box overflow="hidden">
-      <Flex flexDir="column" overflow="hidden">
-        <Box w="90vw" maxW="260px" h="300px" overflow="hidden">
+    <Box w="100%" h="100%">
+      <Flex flexDir="column" w="100%" h="100%">
+        <Flex
+          h="80%"
+          alignItems="center"
+          justifyContent="center"
+          position="static"
+        >
           {movies.length > 0 ? (
             movies?.map((movie, index) => (
-              <Box position="absolute" key={movie.id}>
+              <Box key={movie.id} position="absolute">
                 <TinderCard
                   ref={childRefs[index]}
                   onSwipe={(dir) => swiped(dir, movie)}
@@ -101,7 +106,7 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
           ) : (
             <LoadingMoreShows />
           )}
-        </Box>
+        </Flex>
 
         <Flex justifyContent="center" mt={6}>
           <ButtonGroup>

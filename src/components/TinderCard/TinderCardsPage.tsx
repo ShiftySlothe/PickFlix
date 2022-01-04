@@ -21,7 +21,7 @@ export default function TinderCardsPage() {
   };
 
   return (
-    <VStack>
+    <VStack w="100%" h="100%">
       <CurrentGroup />
       <TRPCQueryWrapper query={movieQuery}>
         {data && <TinderCards movies={data} refetch={refetch} />}

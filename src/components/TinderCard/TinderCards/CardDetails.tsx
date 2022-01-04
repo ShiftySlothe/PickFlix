@@ -1,4 +1,4 @@
-import { Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading } from '@chakra-ui/react';
 import Image from 'next/image';
 import { TMDBMovie, TMDBPosterSize } from '../../../lib/types';
 
@@ -14,21 +14,19 @@ export default function CardDetails({ movie }: CardDetailsProps) {
         backgroundSize="cover"
         backgroundPosition="50%"
         borderRadius="5px"
-        w="192px"
-        h="264px"
+        borderColor="black"
         alignItems="center"
         justifyContent="center"
         boxShadow="lg"
-        p={4}
+        direction="column"
+        width={{ sm: '1px', md: '150px', lg: '210px', xl: '260px' }}
+        height={{ sm: '1px', md: '225px', lg: '315px', xl: '390px' }}
       >
         <Image
           src={`${process.env.TMDB_IMAGE_URL}/${TMDBPosterSize.w300}/${movie.poster_path}`}
           alt={`Image for ${movie.title}`}
           layout="fill"
         />
-        <Heading p={2} fontSize="md">
-          {movie.title}
-        </Heading>
       </Flex>
     </>
   );
