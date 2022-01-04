@@ -1,11 +1,14 @@
-import { Box, Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import { TMDBMovie, TMDBPosterSize } from '../../../lib/types';
+import ShowInfoModal from '../../ShowModal';
 
 interface CardDetailsProps {
   movie: TMDBMovie;
 }
+
 export default function CardDetails({ movie }: CardDetailsProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
       <Flex
@@ -21,6 +24,7 @@ export default function CardDetails({ movie }: CardDetailsProps) {
         direction="column"
         width={{ sm: '1px', md: '150px', lg: '210px', xl: '260px' }}
         height={{ sm: '1px', md: '225px', lg: '315px', xl: '390px' }}
+        onClick={onOpen}
       >
         <Image
           src={`${process.env.TMDB_IMAGE_URL}/${TMDBPosterSize.w300}/${movie.poster_path}`}
@@ -28,6 +32,7 @@ export default function CardDetails({ movie }: CardDetailsProps) {
           layout="fill"
         />
       </Flex>
+      <ShowInfoModal movieId={movie.id} onClose={onClose} isOpen={isOpen} />
     </>
   );
 }

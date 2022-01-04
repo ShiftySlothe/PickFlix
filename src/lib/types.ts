@@ -260,5 +260,5 @@ export interface TMDBCreditsResponse {
 
 export interface TMDBVideoResponse {
   id?: number;
-  results?: TMDBVideo;
+  results?: TMDBVideo[];
 }

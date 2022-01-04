@@ -5,8 +5,9 @@ import TinderCard, { API, Direction } from '../react-tinder-card';
 import { TMDBMovie } from '../../../lib/types';
 import CardDetails from './CardDetails';
 import { trpc } from '../../../server/utils/trpc';
-import { useToast } from '@chakra-ui/react';
+import { useDisclosure, useToast } from '@chakra-ui/react';
 import { useActiveGroupsContext } from '../../../page-components/Dashboard/Dashboard';
+import ShowInfoModal from '../../ShowModal';
 interface TinderCardsProps {
   movies: TMDBMovie[];
   refetch: () => void;
@@ -21,6 +22,7 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
   const dislikeMutation = trpc.useMutation('groupLikes.userDislikesShow');
   const toast = useToast();
   const activeGroup = useActiveGroupsContext();
+
   // Create refs for each movie
   const childRefs = useMemo(() => {
     return Array(m.length)
@@ -93,15 +95,17 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
         >
           {movies.length > 0 ? (
             movies?.map((movie, index) => (
-              <Box key={movie.id} position="absolute">
-                <TinderCard
-                  ref={childRefs[index]}
-                  onSwipe={(dir) => swiped(dir, movie)}
-                  onCardLeftScreen={() => outOfFrame(movie)}
-                >
-                  <CardDetails movie={movie} />
-                </TinderCard>
-              </Box>
+              <>
+                <Box key={movie.id} position="absolute">
+                  <TinderCard
+                    ref={childRefs[index]}
+                    onSwipe={(dir) => swiped(dir, movie)}
+                    onCardLeftScreen={() => outOfFrame(movie)}
+                  >
+                    <CardDetails movie={movie} />
+                  </TinderCard>
+                </Box>
+              </>
             ))
           ) : (
             <LoadingMoreShows />
