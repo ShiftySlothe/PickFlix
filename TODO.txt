@@ -17,32 +17,6 @@ Need to review routers to ensure we're not sending sensitive data to the client
 7) Abstract UI components for reuse
 
 
-Create groups ->
-
-Then home screen, three panes, left pane is user profile & settings, middle pane is swiping, right pane is groups & chats. 
-
-Left pane 
-Endpoint requries -> Query GET USER DETAILS 
-                    Update -> Update settings... at this stage what settings will a user have (dark mode?)
-                    Update -> Delete account
-
-Middle pane 
-                    Query -> Get currently swiping in (to show correct panes)
-                    Mutation -> Update currently swiping in (when a user changes groups)
-                    Query -> Get list of movies/TV shows by preferences (e.g. only select movies/TV shows the user might like)
-                    Mutation -> User has liked a show
-                    Mutation -> User has disliked a show
-                    Query -> Preload shows which other member of the group has liked for fast notifications (see TRPC examples for this)
-
-
-Right pane 
-                    Query -> Get all groups 
-                    Query -> Get all friends
-                    TBC WEBSOCKETS for chat FUNCTIONALITY
-                    Mutation -> Remove from group 
-                    Query -> Get all group likes 
-
-
 BUGS: 
 
     Sign up flow:
