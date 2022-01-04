@@ -7,14 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Movie {
-  id             Int              @id @default(autoincrement())
-  original_title String?
-  UserGroups     UserGroup[]      @relation(references: [id])
-  UserGroupLikes userGroupLikes[] @relation(references: [id])
-}
-
-model TVShow {
+model Show {
   id             Int              @id @default(autoincrement())
   original_title String?
   UserGroups     UserGroup[]      @relation(references: [id])
@@ -90,8 +83,7 @@ model VerificationToken {
 model UserGroup {
   id             Int                 @id @default(autoincrement())
   name           String
-  movies         Movie[]             @relation(references: [id])
-  tvShows        TVShow[]            @relation(references: [id])
+  shows          Show[]              @relation(references: [id])
   users          User[]              @relation(references: [id], name: "groupMembers")
   userGroupLikes userGroupLikes[]
   groupOwners    User[]              @relation(references: [id])
@@ -107,8 +99,7 @@ model userGroupLikes {
   user        User      @relation(fields: [userID], references: [id])
   userGroupID Int
   userGroup   UserGroup @relation(fields: [userGroupID], references: [id], onDelete: Cascade)
-  movies      Movie[]   @relation(references: [id])
-  tvShows     TVShow[]  @relation(references: [id])
+  shows       Show[]    @relation(references: [id])
   liked       Boolean
 }
 
