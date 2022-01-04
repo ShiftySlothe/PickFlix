@@ -33,18 +33,10 @@ export default function ShowInfoModal({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{movieData?.title}</ModalHeader>
-          <Text>{movieData?.tagline}</Text>
           <ModalCloseButton />
           <ModalBody>
-            <Heading>Trailer</Heading>
             {movieData && <MovieVideoCarosel movieId={movieData.id} />}
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </TRPCQueryWrapper>

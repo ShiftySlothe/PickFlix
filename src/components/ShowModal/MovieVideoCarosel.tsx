@@ -13,19 +13,6 @@ export default function MovieVideoCarosel({ movieId }: { movieId: number }) {
 
   const urls = showVideoQuery.data;
 
-  return (
-    <TRPCQueryWrapper query={showVideoQuery}>
-      <Carousel
-        onClickItem={(index, item) => console.log(index, item)}
-        width={'640px'}
-      >
-        {urls && urls.map((u, i) => <ReactPlayer url={u} key={i} controls />)}
-      </Carousel>
-    </TRPCQueryWrapper>
-  );
-}
-
-export const youtubeAutoplayWithCustomThumbs = () => {
   const customRenderItem = (item, props) => (
     <item.type {...item.props} {...props} />
   );
@@ -43,26 +30,15 @@ export const youtubeAutoplayWithCustomThumbs = () => {
     });
 
   return (
-    <Carousel renderItem={customRenderItem} renderThumbs={customRenderThumb}>
-      <YoutubeSlide
-        key="youtube-1"
-        url="https://www.youtube.com/embed/AVn-Yjr7kDc"
-      />
-      <YoutubeSlide
-        key="youtube-2"
-        url="https://www.youtube.com/embed/mOdmi9SVeWY"
-      />
-      <YoutubeSlide
-        key="youtube-3"
-        url="https://www.youtube.com/embed/n0F6hSpxaFc"
-      />
-      <YoutubeSlide
-        key="youtube-4"
-        url="https://www.youtube.com/embed/0uGETVnkujA"
-      />
-    </Carousel>
+    <TRPCQueryWrapper query={showVideoQuery}>
+      <Carousel renderItem={customRenderItem} renderThumbs={customRenderThumb}>
+        {urls?.map((u, i) => (
+          <YoutubeSlide key={i} url={u} />
+        ))}
+      </Carousel>
+    </TRPCQueryWrapper>
   );
-};
+}
 
 const YoutubeSlide = ({
   url,

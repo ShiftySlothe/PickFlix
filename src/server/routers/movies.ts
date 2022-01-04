@@ -118,7 +118,7 @@ export const moviesRouter = createRouter()
       console.log(onlyYoutubeTrailers);
 
       const urls = onlyYoutubeTrailers?.map(
-        (v) => `https://www.youtube.com/watch?v=${v.key}`,
+        (v) => `https://www.youtube.com/embed/${v.key}`,
       );
       console.log(urls);
       console.log(urls);
