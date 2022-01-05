@@ -6,12 +6,11 @@ import { Context } from '../context';
 import { noQuery, dataFound, noData } from '../utils/queryHelpers';
 
 const checkLoggedIn = (ctx: Context) => {
-  if (!ctx.session || !ctx.session.user) 
+  if (!ctx.session || !ctx.session.user)
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Must be logged in',
     });
-  }
 };
 
 export const userRouter = createRouter()
@@ -253,7 +252,7 @@ export const userRouter = createRouter()
         data: {
           name: input.name,
           users: { connect: [{ id: ctx.session.user.id }] },
-          groupOwner: { connect: { id: ctx.session.user.id } },
+          groupOwners: { connect: [{ id: ctx.session.user.id }] },
         },
       });
 

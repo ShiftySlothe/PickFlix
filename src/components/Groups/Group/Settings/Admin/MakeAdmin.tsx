@@ -29,7 +29,7 @@ export function MakeAdmin({ user: member, groupId }: GroupMemberProps) {
   return (
     <Tooltip label={isAdmin ? 'Already admin' : 'Make admin'} placement="top">
       <IconButton
-        aria-label={`Grant ${member.name} admin`}
+        aria-label={`Grant ${member.userName} admin`}
         icon={<GrUserAdmin />}
         onClick={makeAdmin}
         disabled={isAdmin}

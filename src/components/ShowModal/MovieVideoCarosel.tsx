@@ -13,20 +13,20 @@ export default function MovieVideoCarosel({ movieId }: { movieId: number }) {
 
   const urls = showVideoQuery.data;
 
-  const customRenderItem = (item, props) => (
+  const customRenderItem = (item: any, props: any) => (
     <item.type {...item.props} {...props} />
   );
 
-  const getVideoThumb = (videoId) =>
+  const getVideoThumb = (videoId: any) =>
     `https://img.youtube.com/vi/${videoId}/default.jpg`;
 
-  const getVideoId = (url) =>
+  const getVideoId = (url: any) =>
     url.substr('https://www.youtube.com/embed/'.length, url.length);
 
-  const customRenderThumb = (children) =>
-    children.map((item) => {
+  const customRenderThumb = (children: any) =>
+    children.map((item: any, i: any) => {
       const videoId = getVideoId(item.props.url);
-      return <img src={getVideoThumb(videoId)} />;
+      return <img src={getVideoThumb(videoId)} key={i} />;
     });
 
   return (

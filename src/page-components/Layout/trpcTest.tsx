@@ -6,7 +6,7 @@ import { trpc } from '../../server/utils/trpc';
 export default function TrpcTest() {
   const query = trpc.useQuery(['user.getLikedGenresFromSession']);
   const data = query.data;
-  const mutation = trpc.useMutation('groupLikes.userLikesTVShow');
+  const mutation = trpc.useMutation('groupLikes.userLikesShow');
   return (
     <div>
       <Heading>Query test area</Heading>

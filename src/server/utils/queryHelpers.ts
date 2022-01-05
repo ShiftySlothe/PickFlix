@@ -30,7 +30,7 @@ export const checkLoggedIn = (ctx: Context) => {
   }
 };
 
-export const checkIsGroupAdmin = async (ctx, groupId) => {
+export const checkIsGroupAdmin = async (ctx: Context, groupId: number) => {
   const isGroupAdmin = await ctx.prisma.userGroup.findFirst({
     where: {
       id: groupId,
