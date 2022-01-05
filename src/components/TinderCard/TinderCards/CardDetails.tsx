@@ -32,7 +32,7 @@ export default function CardDetails({ movie }: CardDetailsProps) {
           layout="fill"
         />
       </Flex>
-      <ShowInfoModal movieId={movie.id} onClose={onClose} isOpen={isOpen} />
+      {/* <ShowInfoModal movieId={movie.id} onClose={onClose} isOpen={isOpen} /> */}
     </>
   );
 }

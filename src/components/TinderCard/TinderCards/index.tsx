@@ -85,7 +85,7 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
   };
 
   return (
-    <Box w="100%" h="60vh">
+    <Box w="100%" h="60vh" overflow="hidden">
       <Flex flexDir="column" w="100%" h="100%" overflow="hidden">
         <Flex
           h="80%"

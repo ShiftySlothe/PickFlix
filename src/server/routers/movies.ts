@@ -54,6 +54,9 @@ export const moviesRouter = createRouter()
                 id: movie.id,
               },
             },
+            user: {
+              id: ctx?.session?.user.id,
+            },
           },
         });
         if (!likedAlready) {
