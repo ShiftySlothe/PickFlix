@@ -20,6 +20,7 @@ import { createGenericContext } from '../../../lib/createGenericContext';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { RefetchContext } from '../../../lib/types';
 import { GroupSettings } from './Settings';
+import GroupLikes from './GroupLikes';
 
 export interface GroupProps {
   groupId: number;
@@ -63,47 +64,4 @@ export default function Group({ groupId }: GroupProps) {
       </Flex>
     </Skeleton>
   );
-}
-
-function GroupLikes({ groupId }: GroupProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = useRef<HTMLButtonElement>(null);
-  return (
-    <>
-      <Tooltip label="Likes" placement="top">
-        <IconButton
-          aria-label="Group settings"
-          icon={<AiOutlineLike />}
-          onClick={onOpen}
-          ref={btnRef}
-        />
-      </Tooltip>
-      <Drawer
-        isOpen={isOpen}
-        placement="right"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Group likes</DrawerHeader>
-
-          <DrawerBody>
-            <LikesBody groupId={groupId} />
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
-}
-
-function LikesBody({ groupId }: GroupProps) {
-  return <Text>Likes</Text>;
 }

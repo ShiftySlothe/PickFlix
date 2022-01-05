@@ -24,6 +24,5 @@ export const getTop250Movies = async () => {
   const movies = await axios.get<Top250MovieResponse>(
     `https://imdb-api.com/en/API/Top250Movies/k_irdt36i9`,
   );
-  console.log(movies.data);
   return movies.data;
 };

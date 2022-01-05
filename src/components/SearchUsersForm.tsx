@@ -122,11 +122,6 @@ function SearchFormResponse({ username }: SearchFormResponseProps) {
   ]);
   const userMatches = userMatchQuery.data;
 
-  useEffect(() => {
-    console.log('USER MATCHES');
-    console.log(userMatches);
-  }, [userMatches]);
-
   // Handle loading/errors
   if (userMatchQuery.error) {
     return (

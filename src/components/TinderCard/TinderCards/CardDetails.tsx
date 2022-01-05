@@ -22,8 +22,8 @@ export default function CardDetails({ movie }: CardDetailsProps) {
         justifyContent="center"
         boxShadow="lg"
         direction="column"
-        width={{ sm: '1px', md: '150px', lg: '210px', xl: '260px' }}
-        height={{ sm: '1px', md: '225px', lg: '315px', xl: '390px' }}
+        width={'30vh'}
+        height={'45vh'}
         onClick={onOpen}
       >
         <Image

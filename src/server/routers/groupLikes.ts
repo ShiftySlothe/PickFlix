@@ -3,6 +3,23 @@ import * as Yup from 'yup';
 import { checkLoggedIn } from '../utils/queryHelpers';
 
 export const groupLikesRouter = createRouter()
+  .query('getLikes', {
+    input: Yup.object({
+      groupId: Yup.number().required(),
+    }).required(),
+    async resolve({ ctx, input }) {
+      const groupLikes = await ctx.prisma.userGroup.findFirst({
+        where: {
+          id: input.groupId,
+        },
+        select: {
+          shows: true,
+        },
+      });
+
+      return groupLikes;
+    },
+  })
   .mutation('userLikesShow', {
     input: Yup.object({
       groupId: Yup.number().required(),
@@ -69,7 +86,7 @@ export const groupLikesRouter = createRouter()
       const allUsersLiked =
         like.userGroup.users.length <= like.userGroup.userGroupLikes.length;
       if (allUsersLiked) {
-        const newMatch = ctx.prisma.userGroup.update({
+        const newMatch = await ctx.prisma.userGroup.update({
           where: {
             id: input.groupId,
           },

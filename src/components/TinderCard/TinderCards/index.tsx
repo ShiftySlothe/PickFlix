@@ -1,6 +1,6 @@
 import { Button, ButtonGroup } from '@chakra-ui/button';
 import { Box, Flex, Heading } from '@chakra-ui/layout';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import TinderCard, { API, Direction } from '../react-tinder-card';
 import { TMDBMovie } from '../../../lib/types';
 import CardDetails from './CardDetails';
@@ -85,8 +85,8 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
   };
 
   return (
-    <Box w="100%" h="100%">
-      <Flex flexDir="column" w="100%" h="100%">
+    <Box w="100%" h="60vh">
+      <Flex flexDir="column" w="100%" h="100%" overflow="hidden">
         <Flex
           h="80%"
           alignItems="center"
@@ -108,7 +108,7 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
               </>
             ))
           ) : (
-            <LoadingMoreShows />
+            <LoadingMoreShows refetch={refetch} />
           )}
         </Flex>
 
@@ -130,6 +130,9 @@ const TinderCards = ({ movies: m, refetch }: TinderCardsProps) => {
 export default TinderCards;
 
 // TODO implement Loading More Shows
-function LoadingMoreShows() {
-  return <div>Loading more shows (NI)</div>;
+function LoadingMoreShows({ refetch }: { refetch: () => void }) {
+  useEffect(() => {
+    refetch();
+  });
+  return <div>Loading more shows</div>;
 }

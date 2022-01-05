@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Heading, Text } from '@chakra-ui/react';
+import { Avatar, AvatarGroup, Flex, Heading, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import { useActiveGroupsContext } from '../../page-components/Dashboard/Dashboard';
 import { trpc } from '../../server/utils/trpc';
@@ -28,7 +28,7 @@ interface CurrentGroupAvatarProps {
 
 function CurrentGroupAvatar({ users, groupName }: CurrentGroupAvatarProps) {
   return (
-    <>
+    <Flex direction={'column'} h={'20vh'} alignItems={'center'}>
       <Heading size="md">Swiping in: </Heading>
       <AvatarGroup size="md" max={3}>
         {users.map((user, i) => (
@@ -36,6 +36,6 @@ function CurrentGroupAvatar({ users, groupName }: CurrentGroupAvatarProps) {
         ))}
       </AvatarGroup>
       <Text>{groupName}</Text>
-    </>
+    </Flex>
   );
 }

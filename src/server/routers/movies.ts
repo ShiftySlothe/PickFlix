@@ -107,21 +107,14 @@ export const moviesRouter = createRouter()
       const videos = await axios.get<TMDBVideoResponse>(
         `${process.env.TMDB_BASE_URL}/movie/${input.movieId}/videos?api_key=${process.env.TMDB_API_KEY}&language=en-US`,
       );
-      console.log('VIDEOS');
-      console.log(videos);
 
       const onlyYoutubeTrailers = videos.data.results?.filter(
         (v) => v.site === 'YouTube' && v.type === 'Trailer',
       );
 
-      console.log('YOUTUBE');
-      console.log(onlyYoutubeTrailers);
-
       const urls = onlyYoutubeTrailers?.map(
         (v) => `https://www.youtube.com/embed/${v.key}`,
       );
-      console.log(urls);
-      console.log(urls);
 
       return urls;
     },

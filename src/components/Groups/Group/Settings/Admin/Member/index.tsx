@@ -16,10 +16,6 @@ export default function Member({ user, groupId }: GroupMemberProps) {
 
   const isMember = isMemberQuery.data;
 
-  useEffect(() => {
-    console.log('USMEMBER');
-    console.log(isMember);
-  }, [isMember]);
   return (
     <Skeleton isLoaded={isMemberQuery.isSuccess}>
       <Flex alignItems="center" justifyContent="space-between" my={1}>

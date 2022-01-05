@@ -27,14 +27,14 @@ interface RowProps {
 }
 function Row({ element }: RowProps) {
   return (
-    <Stack spacing={8} mx={'auto'} py={2} px={2}>
+    <Stack mx={'auto'}>
       <Box
         rounded={'lg'}
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow={'lg'}
         p={3}
         h="80vh"
-        w="30vw"
+        w="33vw"
       >
         {element}
       </Box>

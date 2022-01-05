@@ -38,8 +38,6 @@ export const userRouter = createRouter()
         },
       });
 
-      console.log(ctx?.session?.user.id);
-      console.log(users);
       return users;
     },
   })
