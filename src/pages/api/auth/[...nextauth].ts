@@ -17,9 +17,6 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
-  jwt: {
-    signingKey: process.env.JWT_SIGNING_PRIVATE_KEY as string,
-  },
   adapter: PrismaAdapter(prisma),
   secret: process.env.SECRET,
   pages: {
