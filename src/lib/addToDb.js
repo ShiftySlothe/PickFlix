@@ -1,6 +1,6 @@
 import pkg from '@prisma/client';
 const { PrismaClient } = pkg;
-const genres = [
+export const genres = [
   {
     genreID: 28,
     name: 'Action',
@@ -6113,6 +6113,4 @@ export async function addGenres() {
   });
 }
 
-add250Movies();
-add250TV();
 addGenres();

@@ -9,6 +9,7 @@ import {
 } from '../../lib/types';
 import { Context } from '../context';
 import { move } from 'formik';
+import { genres } from '../../lib/addToDb';
 
 export const moviesRouter = createRouter()
   .query('get20MostPopular', {
@@ -120,6 +121,14 @@ export const moviesRouter = createRouter()
       );
 
       return urls;
+    },
+  })
+  .mutation('addGenres', {
+    async resolve({ ctx }) {
+      const data = genres;
+      await ctx.prisma.genre.createMany({
+        data,
+      });
     },
   });
 
