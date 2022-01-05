@@ -1,6 +1,5 @@
 import { createRouter } from '../createRouter';
 import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
 import axios, { AxiosResponse } from 'axios';
 import {
   TMDBMovie,
@@ -8,8 +7,85 @@ import {
   TMDBVideoResponse,
 } from '../../lib/types';
 import { Context } from '../context';
-import { move } from 'formik';
-import { genres } from '../../lib/addToDb';
+
+const genres = [
+  {
+    genreID: 28,
+    name: 'Action',
+  },
+  {
+    genreID: 12,
+    name: 'Adventure',
+  },
+  {
+    genreID: 16,
+    name: 'Animation',
+  },
+  {
+    genreID: 35,
+    name: 'Comedy',
+  },
+  {
+    genreID: 80,
+    name: 'Crime',
+  },
+  {
+    genreID: 99,
+    name: 'Documentary',
+  },
+  {
+    genreID: 18,
+    name: 'Drama',
+  },
+  {
+    genreID: 10751,
+    name: 'Family',
+  },
+  {
+    genreID: 14,
+    name: 'Fantasy',
+  },
+  {
+    genreID: 36,
+    name: 'History',
+  },
+  {
+    genreID: 27,
+    name: 'Horror',
+  },
+  {
+    genreID: 10402,
+    name: 'Music',
+  },
+  {
+    genreID: 9648,
+    name: 'Mystery',
+  },
+  {
+    genreID: 10749,
+    name: 'Romance',
+  },
+  {
+    genreID: 878,
+    name: 'Science Fiction',
+  },
+  {
+    genreID: 10770,
+    name: 'TV Movie',
+  },
+  {
+    genreID: 53,
+    name: 'Thriller',
+  },
+  {
+    genreID: 10752,
+    name: 'War',
+  },
+  {
+    genreID: 37,
+    name: 'Western',
+  },
+];
 
 export const moviesRouter = createRouter()
   .query('get20MostPopular', {
