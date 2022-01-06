@@ -22,10 +22,8 @@ export default function Dashboard() {
       <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
         <Rows>
           <Groups />
-
-          {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
-
-          <Friends />
+          {/* {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />} */}
+          {/* <Friends /> */}
         </Rows>
       </ActiveGroupsContextProvider>
     </TRPCQueryWrapper>
