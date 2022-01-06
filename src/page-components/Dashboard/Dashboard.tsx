@@ -3,9 +3,8 @@ import { createGenericContext } from '../../lib/createGenericContext';
 import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../../components/Helpers/TRPC/useQueryWrapper';
 import { Heading } from '@chakra-ui/layout';
-import { Text } from '@chakra-ui/react';
+import { Center } from '@chakra-ui/react';
 import Rows from '../Layout/Rows';
-import Group from '../../components/Groups/Group';
 import Groups from '../../components/Groups';
 import Friends from '../../components/Friends';
 import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
@@ -31,7 +30,11 @@ export default function Dashboard() {
 }
 
 function NoActiveGroup() {
-  return <Heading size="md">Must have an active group.</Heading>;
+  return (
+    <Center>
+      <Heading size="md">Select a group to swipe in</Heading>
+    </Center>
+  );
 }
 
 // function NoActiveGroup() {
