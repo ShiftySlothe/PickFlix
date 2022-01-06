@@ -22,7 +22,8 @@ export default function Dashboard() {
       <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
         <Rows>
           <Groups />
-          {/* {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />} */}
+          <NoActiveGroup />
+          {/* {data?.activeGroup ? <TinderCardsPage /> : } */}
           <Friends />
         </Rows>
       </ActiveGroupsContextProvider>
