@@ -19,7 +19,8 @@ export default function Dashboard() {
   return (
     <TRPCQueryWrapper query={activeGroupQuery}>
       <Rows>
-        <NoActiveGroup />
+        <Groups />
+        <Friends />
       </Rows>
     </TRPCQueryWrapper>
   );
