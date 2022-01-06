@@ -1,23 +1,11 @@
 import { Avatar } from '@chakra-ui/avatar';
-import { Button, IconButton } from '@chakra-ui/button';
+import { IconButton } from '@chakra-ui/button';
 import { Box, Flex, Text } from '@chakra-ui/layout';
-import { AiOutlineLike } from 'react-icons/ai';
+import { MdOutlineSwipe } from 'react-icons/md';
 import { trpc } from '../../../server/utils/trpc';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { Tooltip } from '@chakra-ui/tooltip';
-import {
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-} from '@chakra-ui/modal';
-import { useDisclosure } from '@chakra-ui/hooks';
-import { useRef } from 'react';
 import { createGenericContext } from '../../../lib/createGenericContext';
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { RefetchContext } from '../../../lib/types';
 import { GroupSettings } from './Settings';
 import GroupLikes from './GroupLikes';
@@ -52,16 +40,29 @@ export default function Group({ groupId }: GroupProps) {
           <RefetchGroupContextProvider value={{ refetch: nameQuery.refetch }}>
             <GroupLikes groupId={groupId} />
             <GroupSettings groupId={groupId} groupName={data?.name} />
-            <Tooltip label="More info" placement="top">
-              <IconButton
-                icon={<HamburgerIcon />}
-                aria-label="More info"
-                ml={1}
-              />
-            </Tooltip>
+            <SelectGroup groupId={groupId} />
           </RefetchGroupContextProvider>
         </Box>
       </Flex>
     </Skeleton>
+  );
+}
+
+function SelectGroup({ groupId }: GroupProps) {
+  const activeGroupMutation = trpc.useMutation('group.setActiveGroup');
+
+  const setActiveGroup = async () => {
+    await activeGroupMutation.mutateAsync({ groupId });
+  };
+
+  return (
+    <Tooltip label="Select Group" placement="top">
+      <IconButton
+        icon={<MdOutlineSwipe />}
+        aria-label="Select Group"
+        ml={1}
+        onClick={setActiveGroup}
+      />
+    </Tooltip>
   );
 }
