@@ -2,7 +2,6 @@ import { UserGroup } from '.prisma/client';
 import { createGenericContext } from '../../lib/createGenericContext';
 import { trpc } from '../../server/utils/trpc';
 import TRPCQueryWrapper from '../../components/Helpers/TRPC/useQueryWrapper';
-import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
 import { Heading } from '@chakra-ui/layout';
 import { Text } from '@chakra-ui/react';
 import Rows from '../Layout/Rows';
@@ -23,7 +22,6 @@ export default function Dashboard() {
         <Rows>
           <Groups />
           <NoActiveGroup />
-          {/* {data?.activeGroup ? <TinderCardsPage /> : } */}
           <Friends />
         </Rows>
       </ActiveGroupsContextProvider>
