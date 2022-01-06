@@ -21,13 +21,13 @@ export default function Dashboard() {
     <Rows>
       <Groups />
       <TRPCQueryWrapper query={activeGroupQuery}>
-        {data?.activeGroup ? (
+        {/* {data?.activeGroup ? (
           <ActiveGroupsContextProvider value={data.activeGroup}>
             <TinderCardsPage />
           </ActiveGroupsContextProvider>
-        ) : (
-          <NoActiveGroup />
-        )}
+        ) : ( */}
+        <NoActiveGroup />
+        {/* )} */}
       </TRPCQueryWrapper>
       <Friends />
     </Rows>
@@ -37,7 +37,6 @@ export default function Dashboard() {
 function NoActiveGroup() {
   const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
   const { data: allGroups } = allGroupsQuery;
-  const activeGroupMutation = trpc.useMutation;
   return (
     <TRPCQueryWrapper query={allGroupsQuery}>
       <Heading size="md">Must have an active group.</Heading>
