@@ -21,13 +21,9 @@ export default function Dashboard() {
     <Rows>
       <Groups />
       <TRPCQueryWrapper query={activeGroupQuery}>
-        {data?.activeGroup ? (
-          <ActiveGroupsContextProvider value={data.activeGroup}>
-            <TinderCardsPage />
-          </ActiveGroupsContextProvider>
-        ) : (
-          <NoActiveGroup />
-        )}
+        <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
+          {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
+        </ActiveGroupsContextProvider>
       </TRPCQueryWrapper>
       <Friends />
     </Rows>

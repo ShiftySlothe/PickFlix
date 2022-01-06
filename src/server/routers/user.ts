@@ -1,6 +1,5 @@
 import { createRouter } from '../createRouter';
 import * as Yup from 'yup';
-import { Context } from '../context';
 import { TRPCError } from '@trpc/server';
 import { checkLoggedIn } from '../utils/queryHelpers';
 
