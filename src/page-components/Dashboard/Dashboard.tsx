@@ -26,9 +26,7 @@ export default function Dashboard() {
             <TinderCardsPage />
           </ActiveGroupsContextProvider>
         ) : (
-          <Rows>
-            <NoActiveGroup />
-          </Rows>
+          <NoActiveGroup />
         )}
       </TRPCQueryWrapper>
       <Friends />
