@@ -23,7 +23,7 @@ export default function Dashboard() {
         <Rows>
           <Groups />
           {/* {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />} */}
-          {/* <Friends /> */}
+          <Friends />
         </Rows>
       </ActiveGroupsContextProvider>
     </TRPCQueryWrapper>
