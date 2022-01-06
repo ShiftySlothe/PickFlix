@@ -1,29 +1,7 @@
-import { Avatar } from '@chakra-ui/avatar';
-import { Button, IconButton } from '@chakra-ui/button';
-import { useDisclosure } from '@chakra-ui/hooks';
-import {
-  CheckCircleIcon,
-  CheckIcon,
-  CloseIcon,
-  HamburgerIcon,
-} from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
-import { Box, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/layout';
-import {
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-} from '@chakra-ui/modal';
+import { Divider, Text, VStack } from '@chakra-ui/layout';
 import { Skeleton } from '@chakra-ui/skeleton';
-import { useToast } from '@chakra-ui/toast';
-import { Tooltip } from '@chakra-ui/tooltip';
-import React, { useRef, useState } from 'react';
-import { AiOutlineUserAdd } from 'react-icons/ai';
-import { FcInvite } from 'react-icons/fc';
+import React from 'react';
 import { createGenericContext } from '../../lib/createGenericContext';
 import { RefetchContext } from '../../lib/types';
 import { trpc } from '../../server/utils/trpc';

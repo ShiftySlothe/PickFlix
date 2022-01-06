@@ -8,6 +8,7 @@ import Rows from '../Layout/Rows';
 import Groups from '../../components/Groups';
 import Friends from '../../components/Friends';
 import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
+import DashNav from '../../components/NavBar/DashNavBar';
 
 export const [useActiveGroupsContext, ActiveGroupsContextProvider] =
   createGenericContext<UserGroup>();
@@ -17,15 +18,18 @@ export default function Dashboard() {
   const { data } = activeGroupQuery;
 
   return (
-    <TRPCQueryWrapper query={activeGroupQuery}>
-      <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
-        <Rows>
-          <Groups />
-          {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
-          <Friends />
-        </Rows>
-      </ActiveGroupsContextProvider>
-    </TRPCQueryWrapper>
+    <>
+      <DashNav />
+      <TRPCQueryWrapper query={activeGroupQuery}>
+        <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
+          <Rows>
+            <Groups />
+            {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
+            <Friends />
+          </Rows>
+        </ActiveGroupsContextProvider>
+      </TRPCQueryWrapper>
+    </>
   );
 }
 
@@ -36,19 +40,3 @@ function NoActiveGroup() {
     </Center>
   );
 }
-
-// function NoActiveGroup() {
-//   const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
-//   const { data: allGroups } = allGroupsQuery;
-//   return (
-//     <TRPCQueryWrapper query={allGroupsQuery}>
-//       <Heading size="md">Must have an active group.</Heading>
-//       <Text>Select a group:</Text>
-//       {allGroups ? (
-//         allGroups.map((group, i) => <Group groupId={group.id} key={i} />)
-//       ) : (
-//         <Text>You&apos;re not in any groups yet.</Text>
-//       )}
-//     </TRPCQueryWrapper>
-//   );
-// }

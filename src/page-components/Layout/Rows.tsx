@@ -1,4 +1,4 @@
-import { Flex, Stack, Center, useColorModeValue, Box } from '@chakra-ui/react';
+import { Flex, Stack, useColorModeValue, Box } from '@chakra-ui/react';
 import React from 'react';
 
 export default function Rows({
@@ -9,7 +9,7 @@ export default function Rows({
   ) as React.ReactElement[];
   return (
     <Flex
-      height={'100vh'}
+      height={'90vh'}
       width={'100vw'}
       align={'center'}
       justify={'center'}

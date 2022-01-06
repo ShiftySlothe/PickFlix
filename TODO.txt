@@ -1,40 +1,19 @@
 CURRENT:
 
-Need to review routers to ensure we're not sending sensitive data to the client
-- Perhaps make a UI USER Type which just has the core data needed for UI elements (userName, Image etc)
-- Friends is broken, I should add a friend to a sub table of friends when a request is accepted, not add them if declined and have a method to remove them once accepted. 
-- This is also true for groups.
+    - Update Dashboard
+        - Create a user settings modal
+    
 
 
 - Will need to add a job that runs to check for changes to IDs (names to not change, so could do a check there and then run the check)
 
-1) SET UP PROD ENV VARIABLES - NEED TO UNDERSTAND MORE ABOUT HOW DEPLOYING TO VERCEL WORKS
-2) ADD CUSTOM DOMAIN FROM GODADDY - DONE
-3) ADD NEW USER SIGN UP FLOW  
-4) ADD GROUPS
-5) GET LIKES WORKING 
-6) INTERGRATE TMDB CATEGORIES ETC
-7) Abstract UI components for reuse
-
-
 BUGS: 
-
     Sign up flow:
-        User can send themselves a friend request -> remove user from list
-        Genres appear in random order -> filter by alpha
-        User cannot update username to their own username
+        Doesn't direct to dashboard
+    Dashboard:
+        Doesn't default to colormode dark.
+    Tindercards:
+        If you swipe in a group on your own you create a load of matches
+        The trailer modal isn't working
 
 
-    Schema change all ID to Id
-
-    No genres Found on sign up screen 1
-
-
-Questions for Rob:
-
-So, now I'm using the API, I want TRPC to do the client side stuff, but I want a second server to do some checks on the DB. True backend gubbins.
-The checks will be 1) Does the 
-
-Actually no, I only need to check and add an item if it has been liked. Much less effort. 
-
-We still might need something like this to run regular jobs to check IDs have not changed. This will be implemented later.

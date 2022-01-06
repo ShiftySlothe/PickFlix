@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/button';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
-import NavBar from '../../components/NavBar/NavBar';
+import NavBar from '../../components/NavBar/HomeNavBar';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';

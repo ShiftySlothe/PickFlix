@@ -22,11 +22,13 @@ export default function ErrorPage({
   return (
     <Box>
       <Center>
-        <Flex h="80vh" flexDir="column" alignItems="center">
+        <Flex h="80vh" flexDir="column" alignItems="center" p={6}>
           <NextError title={errorTitle} statusCode={statusCode} />
           {!hideReturnButton && (
             <Link href={redirectURL}>
-              <Button w="50%">{redirectMessage}</Button>
+              <Button w="50%" mt={4}>
+                {redirectMessage}
+              </Button>
             </Link>
           )}
         </Flex>
