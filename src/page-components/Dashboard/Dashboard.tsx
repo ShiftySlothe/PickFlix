@@ -8,6 +8,7 @@ import Rows from '../Layout/Rows';
 import Group from '../../components/Groups/Group';
 import Groups from '../../components/Groups';
 import Friends from '../../components/Friends';
+import TinderCardsPage from '../../components/TinderCard/TinderCardsPage';
 
 export const [useActiveGroupsContext, ActiveGroupsContextProvider] =
   createGenericContext<UserGroup>();
@@ -18,11 +19,13 @@ export default function Dashboard() {
 
   return (
     <TRPCQueryWrapper query={activeGroupQuery}>
-      <Rows>
-        <Groups />
-        <NoActiveGroup />
-        <Friends />
-      </Rows>
+      <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
+        <Rows>
+          <Groups />
+          {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
+          <Friends />
+        </Rows>
+      </ActiveGroupsContextProvider>
     </TRPCQueryWrapper>
   );
 }
