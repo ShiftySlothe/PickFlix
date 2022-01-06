@@ -202,6 +202,15 @@ export const moviesRouter = createRouter()
   .mutation('addGenres', {
     async resolve({ ctx }) {
       const data = genres;
+
+      data.forEach(async (d) => {
+        await ctx.prisma.genre.deleteMany({
+          where: {
+            genreID: d.genreID,
+          },
+        });
+      });
+
       await ctx.prisma.genre.createMany({
         data,
       });
