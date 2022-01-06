@@ -18,25 +18,24 @@ export default function Dashboard() {
   const { data } = activeGroupQuery;
 
   return (
-    <Rows>
-      <Groups />
-      <TRPCQueryWrapper query={activeGroupQuery}>
-        {/* {data?.activeGroup ? (
-          <ActiveGroupsContextProvider value={data.activeGroup}>
-            <TinderCardsPage />
-          </ActiveGroupsContextProvider>
-        ) : ( */}
-        <NoActiveGroup />
-        {/* )} */}
-      </TRPCQueryWrapper>
-      <Friends />
-    </Rows>
+    <TRPCQueryWrapper query={activeGroupQuery}>
+      <ActiveGroupsContextProvider value={data?.activeGroup || undefined}>
+        <Rows>
+          <Groups />
+
+          {data?.activeGroup ? <TinderCardsPage /> : <NoActiveGroup />}
+
+          <Friends />
+        </Rows>
+      </ActiveGroupsContextProvider>
+    </TRPCQueryWrapper>
   );
 }
 
 function NoActiveGroup() {
   const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
   const { data: allGroups } = allGroupsQuery;
+  const activeGroupMutation = trpc.useMutation;
   return (
     <TRPCQueryWrapper query={allGroupsQuery}>
       <Heading size="md">Must have an active group.</Heading>
