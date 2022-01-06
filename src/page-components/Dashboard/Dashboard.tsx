@@ -20,6 +20,7 @@ export default function Dashboard() {
     <TRPCQueryWrapper query={activeGroupQuery}>
       <Rows>
         <Groups />
+        <NoActiveGroup />
         <Friends />
       </Rows>
     </TRPCQueryWrapper>
@@ -27,17 +28,21 @@ export default function Dashboard() {
 }
 
 function NoActiveGroup() {
-  const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
-  const { data: allGroups } = allGroupsQuery;
-  return (
-    <TRPCQueryWrapper query={allGroupsQuery}>
-      <Heading size="md">Must have an active group.</Heading>
-      <Text>Select a group:</Text>
-      {allGroups ? (
-        allGroups.map((group, i) => <Group groupId={group.id} key={i} />)
-      ) : (
-        <Text>You&apos;re not in any groups yet.</Text>
-      )}
-    </TRPCQueryWrapper>
-  );
+  return <Heading size="md">Must have an active group.</Heading>;
 }
+
+// function NoActiveGroup() {
+//   const allGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
+//   const { data: allGroups } = allGroupsQuery;
+//   return (
+//     <TRPCQueryWrapper query={allGroupsQuery}>
+//       <Heading size="md">Must have an active group.</Heading>
+//       <Text>Select a group:</Text>
+//       {allGroups ? (
+//         allGroups.map((group, i) => <Group groupId={group.id} key={i} />)
+//       ) : (
+//         <Text>You&apos;re not in any groups yet.</Text>
+//       )}
+//     </TRPCQueryWrapper>
+//   );
+// }
