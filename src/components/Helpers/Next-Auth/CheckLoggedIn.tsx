@@ -22,5 +22,7 @@ export default function CheckLoggedIn({
   } else if (newUserQuery.isSuccess && isNewUser) {
     Router.push('/new-user/details');
     return <></>;
+  } else {
+    return <></>;
   }
 }
