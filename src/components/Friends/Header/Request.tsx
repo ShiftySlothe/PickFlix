@@ -12,7 +12,7 @@ interface FriendRequestProps {
     id: string;
     userName: string | null;
     image: string | null;
-  };
+  } | null;
 }
 export default function FriendRequest({ sender }: FriendRequestProps) {
   return (

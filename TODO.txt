@@ -20,3 +20,7 @@ BUGS:
 Color Mode => change font color on friend add links 
 
 IMPLICIT MANY TO MANY does not support referntial actions, 
+
+Need some further logic to handle account deletion for user groups e.g. if user deleted is usergroup admin && they are the only admin then delete the group. 
+
+Heroku connections issue.
