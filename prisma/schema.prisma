@@ -96,7 +96,7 @@ model UserGroup {
 model userGroupLikes {
   id          Int       @id @default(autoincrement())
   userID      String?
-  user        User?      @relation(fields: [userID], references: [id], onDelete: Cascade)
+  user        User?     @relation(fields: [userID], references: [id], onDelete: Cascade)
   userGroupID Int
   userGroup   UserGroup @relation(fields: [userGroupID], references: [id], onDelete: Cascade)
   shows       Show[]    @relation(references: [id])

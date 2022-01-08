@@ -55,9 +55,13 @@ export default function FriendInvites() {
           <DrawerHeader>Friend Requests</DrawerHeader>
           <DrawerBody>
             {!!requests && requests.length > 0 ? (
-              requests.map(({ sender }) => (
-                <FriendRequest sender={sender} key={sender.id} />
-              ))
+              requests.map(({ sender }) => {
+                {
+                  return (
+                    sender && <FriendRequest sender={sender} key={sender.id} />
+                  );
+                }
+              })
             ) : (
               <Text>No invites at the moment!</Text>
             )}
