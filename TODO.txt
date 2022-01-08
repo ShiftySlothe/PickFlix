@@ -17,3 +17,6 @@ BUGS:
         The trailer modal isn't working
 
 
+Color Mode => change font color on friend add links 
+
+IMPLICIT MANY TO MANY does not support referntial actions, 

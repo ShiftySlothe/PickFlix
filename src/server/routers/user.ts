@@ -226,7 +226,18 @@ export const userRouter = createRouter()
 
     async resolve({ ctx, input }) {
       checkLoggedIn(ctx);
-      // todo update to check first
+
+      const existingUser = await ctx.prisma.user.findFirst({
+        where: {
+          userName: input.username,
+        },
+      });
+      if (existingUser) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Username already taken',
+        });
+      }
       const user = await ctx.prisma.user.update({
         where: {
           id: ctx?.session?.user.id,
@@ -374,13 +385,19 @@ export const userRouter = createRouter()
     async resolve({ ctx }) {
       checkLoggedIn(ctx);
 
-      const deletion = await ctx.prisma.user.delete({
+      const userDeletion = await ctx.prisma.user.delete({
         where: {
           id: ctx.session?.user?.id,
         },
       });
 
-      return deletion;
+      const accountDeletion = await ctx.prisma.account.deleteMany({
+        where: {
+          userId: ctx?.session?.user.id,
+        },
+      });
+
+      return [userDeletion, accountDeletion];
     },
   })
   .mutation('updateActiveGroup', {

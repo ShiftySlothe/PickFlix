@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -18,6 +18,12 @@ import {
   Text,
   Heading,
   Divider,
+  FormControl,
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  Collapse,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
@@ -35,6 +41,8 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
+import { Field, FieldProps, Form, Formik } from 'formik';
+import * as Yup from 'yup';
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Link
@@ -166,11 +174,10 @@ function AccountSettings() {
           <ModalCloseButton />
           <ModalBody>
             <Divider />
-            <Text mt={2}>Update username</Text>
-            <br />
-            <Text>Delete Account</Text>
-            <br />
-            <Text>Other settings</Text>
+            <Flex alignItems={'center'} direction={'column'}>
+              <CollapsedUsernameUpdate />
+              <CollapsedDeleteAccount />
+            </Flex>
           </ModalBody>
 
           <ModalFooter>
@@ -181,6 +188,163 @@ function AccountSettings() {
         </ModalContent>
       </Modal>
     </>
+  );
+}
+
+function CollapsedUsernameUpdate() {
+  const { isOpen, onToggle } = useDisclosure();
+
+  return (
+    <>
+      <Button mt={3} onClick={onToggle}>
+        {isOpen ? 'Hide' : 'Update username'}
+      </Button>
+      <Collapse in={isOpen} animateOpacity>
+        <UpdateUserNameForm />
+      </Collapse>
+    </>
+  );
+}
+
+function UpdateUserNameForm() {
+  const [usernameQ, setUsernameQ] = useState('');
+  const usernameQuery = trpc.useQuery(['user.getUsernameFromSession']);
+  const userMatchQuery = trpc.useQuery([
+    'user.usernameExistsElsewhere',
+    { username: usernameQ },
+  ]);
+
+  const usernameMutation = trpc.useMutation('user.updateUsername');
+  return (
+    <Formik
+      initialValues={{
+        username: '',
+      }}
+      onSubmit={async (values) => {
+        await usernameMutation.mutateAsync({ username: values.username });
+      }}
+      validationSchema={Yup.object({
+        username: Yup.string()
+          .required('Username is requried')
+          .max(20, 'Username cannot be longer than 20 characters')
+          .trim()
+          .test(
+            'username-backend-validation-waiting',
+            'Checking username...',
+            () => {
+              if (userMatchQuery.isSuccess) {
+                return true;
+              }
+              return false;
+            },
+          )
+          .test('username-backend-validation', 'Username taken', () => {
+            const userNameExists = userMatchQuery.data;
+            return !userNameExists;
+          }),
+      })}
+      validateOnBlur={true}
+    >
+      {(props) => (
+        <Form>
+          <Field name="username">
+            {({ field, form }: FieldProps) => (
+              <FormControl
+                id="username"
+                isInvalid={!!form.errors.username && !!form.touched.username}
+                isRequired
+              >
+                <FormLabel htmlFor="username">Update Username</FormLabel>
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder={
+                    usernameQuery.data && usernameQuery.data.userName
+                      ? usernameQuery.data.userName
+                      : 'Username...'
+                  }
+                  onChange={(e) => {
+                    form.handleChange(e);
+                    setUsernameQ(e.target.value);
+                    form.validateField('username');
+                  }}
+                  disabled={usernameQuery.isLoading}
+                />
+                <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
+          <Button mt={1} type="submit">
+            Update
+          </Button>
+        </Form>
+      )}
+    </Formik>
+  );
+}
+
+function CollapsedDeleteAccount() {
+  const { isOpen, onToggle } = useDisclosure();
+
+  return (
+    <>
+      <Button mt={3} onClick={onToggle}>
+        {isOpen ? 'Hide' : 'Delete Account'}
+      </Button>
+      <Collapse in={isOpen} animateOpacity>
+        <DeleteAccountForm />
+      </Collapse>
+    </>
+  );
+}
+
+function DeleteAccountForm() {
+  const [input, setInput] = useState('');
+  const handleInputChange = (e: any) => setInput(e.target.value);
+
+  const usernameQuery = trpc.useQuery(['user.getUsernameFromSession']);
+  const { data: username } = usernameQuery;
+
+  const deletionMutation = trpc.useMutation('user.deletePerm');
+
+  const deleteAccount = async () => {
+    await deletionMutation.mutateAsync();
+    await Router.push('/');
+    Router.reload();
+  };
+
+  const checkError = () => {
+    if (input === '') {
+      return false;
+    } else {
+      return input !== username?.userName;
+    }
+  };
+
+  return (
+    <TRPCQueryWrapper query={usernameQuery}>
+      <FormControl isInvalid={checkError()}>
+        <FormLabel htmlFor="email">Email</FormLabel>
+        <Input
+          id="username"
+          type="email"
+          value={input}
+          onChange={handleInputChange}
+        />
+        {!checkError() ? (
+          <FormHelperText>
+            Enter your username ({username?.userName}) to delete your account.
+          </FormHelperText>
+        ) : (
+          <FormErrorMessage>
+            Username doesn&apos;t match {username?.userName}
+          </FormErrorMessage>
+        )}
+      </FormControl>
+      <Button isDisabled={input !== username?.userName} onClick={deleteAccount}>
+        Delete account
+      </Button>
+    </TRPCQueryWrapper>
   );
 }
 

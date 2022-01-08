@@ -10,22 +10,17 @@ export default function CheckLoggedIn({
   const { data: session, status } = useSession();
   const newUserQuery = trpc.useQuery(['user.isNewUser']);
   const isNewUser = newUserQuery.data?.newUser;
-
   useEffect(() => {
-    if (isNewUser) {
-      Router.push('/new-user/details');
-    }
-  }, [isNewUser]);
-
-  if (status === 'loading') {
-    return <>Loading...</>;
-  } else if (status === 'unauthenticated') {
+    console.log(newUserQuery);
+  }, [newUserQuery]);
+  if (status === 'unauthenticated') {
     return <NotAuthorisedPage />;
-  } else if (newUserQuery.isLoading) {
+  } else if (newUserQuery.isLoading || newUserQuery.isFetching) {
     return <>Loading...</>;
   } else if (newUserQuery.isSuccess && !isNewUser) {
     return <>{children}</>;
-  } else {
+  } else if (newUserQuery.isSuccess && isNewUser) {
+    Router.push('/new-user/details');
     return <></>;
   }
 }

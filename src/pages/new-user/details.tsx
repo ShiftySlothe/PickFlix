@@ -47,7 +47,7 @@ export default function UpdateDetails() {
               <Button
                 onClick={async () => {
                   await disableNewUser.mutateAsync();
-                  Router.push('/dashboard');
+                  await Router.push('/dashboard');
                 }}
               >
                 To dashboard

@@ -22,6 +22,7 @@ interface FormProps {
 export function GroupsForm({ setFormProgress }: FormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userGroupsQuery = trpc.useQuery(['group.getUserGroupsFromSession']);
+  const disableNewUser = trpc.useMutation('user.disableNewUser');
   const userGroups = userGroupsQuery.data;
   return (
     <>
@@ -38,7 +39,11 @@ export function GroupsForm({ setFormProgress }: FormProps) {
           />
         ))}
       <Button onClick={onOpen}>Add new group</Button>
-      <Button onClick={() => setFormProgress(DetailsFormProgress.Final)}>
+      <Button
+        onClick={async () => {
+          setFormProgress(DetailsFormProgress.Final);
+        }}
+      >
         Next
       </Button>
 
