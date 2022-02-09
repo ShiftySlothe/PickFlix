@@ -43,6 +43,7 @@ import {
 } from '@chakra-ui/react';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { KabamModal } from '../KabamModal';
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Link
@@ -70,6 +71,9 @@ export default function DashNav() {
         <Flex h={'10vh'} alignItems={'center'} justifyContent={'space-between'}>
           <Flex h="9vh" w="5%" mx={3} my={1} position="relative">
             <Image src={Logo} layout="fill" sizes="5vw" objectFit="cover" />
+            <Button ml={2} onClick={onOpen}>
+              READ ME
+            </Button>
           </Flex>
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
@@ -115,6 +119,7 @@ export default function DashNav() {
           </Flex>
         </Flex>
       </Box>
+      <KabamModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 }
