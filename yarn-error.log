@@ -1,20 +1,30 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\forso\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react-slick
+  /usr/bin/node /usr/local/bin/yarn
 
 PATH: 
-  C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\GnuPG\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\PuTTY\;C:\cmder;C:\Program Files\dotnet\;C:\Program Files (x86)\Gpg4win\..\GnuPG\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\forso\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\forso\AppData\Local\Programs\Python\Python39\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\GnuPG\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Users\forso\AppData\Local\Microsoft\WindowsApps;C:\Users\forso\AppData\Local\atom\bin;C:\Users\forso\.dotnet\tools;C:\Users\forso\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files (x86)\GitHub CLI\;C:\Users\forso\AppData\Roaming\npm;C:\Scripts\Recipe_App;C:\Python34\Scripts;C:\Program Files\heroku\bin;C:\Users\forso\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\cmder\vendor\bin;C:\cmder\bin
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin
 
 Yarn version: 
-  1.22.11
+  1.22.17
 
 Node version: 
-  14.17.0
+  16.13.2
 
 Platform: 
-  win32 x64
+  linux x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\dev\Polish\pick-flix\pickflix\node_modules\@prisma\engines\query_engine-windows.dll.node'
+  Error: connect ENETUNREACH 104.16.19.35:443 - Local (0.0.0.0:0)
+      at internalConnect (node:net:931:16)
+      at defaultTriggerAsyncIdScope (node:internal/async_hooks:454:18)
+      at emitLookup (node:net:1075:9)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:107658:28
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:107567:13
+      at RawTask.module.exports.RawTask.call (/usr/local/lib/node_modules/yarn/lib/cli.js:83655:19)
+      at flush (/usr/local/lib/node_modules/yarn/lib/cli.js:83737:29)
+      at processTicksAndRejections (node:internal/process/task_queues:78:11)
+      at runNextTicks (node:internal/process/task_queues:65:3)
+      at processImmediate (node:internal/timers:437:9)
 
 npm manifest: 
   {
@@ -44,6 +54,7 @@ npm manifest:
       "@trpc/next": "^9.8.1-alpha.1",
       "@trpc/react": "^9.8.1-alpha.1",
       "@trpc/server": "^9.8.1-alpha.1",
+      "@types/react-slick": "^0.23.8",
       "axios": "^0.22.0",
       "formik": "^2.2.9",
       "framer-motion": "4",
@@ -53,7 +64,10 @@ npm manifest:
       "react": "17.0.2",
       "react-dom": "17.0.2",
       "react-icons": "^4.2.0",
+      "react-player": "^2.9.0",
       "react-query": "^3.25.0",
+      "react-responsive-carousel": "^3.2.22",
+      "react-slick": "^0.28.1",
       "react-tinder-card": "^1.4.0",
       "super-json": "^2.2.0",
       "superjson": "^1.7.5",
@@ -1179,6 +1193,22 @@ Lockfile:
     resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.4.tgz"
     integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
   
+  "@types/react-slick@^0.23.8":
+    version "0.23.8"
+    resolved "https://registry.yarnpkg.com/@types/react-slick/-/react-slick-0.23.8.tgz#91654e657158da57f082c7b213e20756d3a37502"
+    integrity sha512-SfzSg++/3uyftVZaCgHpW+2fnJFsyJEQ/YdsuqfOWQ5lqUYV/gY/UwAnkw4qksCj5jalto/T5rKXJ8zeFldQeA==
+    dependencies:
+      "@types/react" "*"
+  
+  "@types/react@*":
+    version "17.0.38"
+    resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.38.tgz#f24249fefd89357d5fa71f739a686b8d7c7202bd"
+    integrity sha512-SI92X1IA+FMnP3qM5m4QReluXzhcmovhZnLNm3pyeQlooi02qI7sLiepEYqT678uNiyc25XfCqxREFpy3W7YhQ==
+    dependencies:
+      "@types/prop-types" "*"
+      "@types/scheduler" "*"
+      csstype "^3.0.2"
+  
   "@types/react@17.0.24", "@types/react@^17.0.0":
     version "17.0.24"
     resolved "https://registry.npmjs.org/@types/react/-/react-17.0.24.tgz"
@@ -1725,6 +1755,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz"
     integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
   
+  classnames@^2.2.5:
+    version "2.3.1"
+    resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+    integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
+  
   clean-stack@^2.0.0:
     version "2.2.0"
     resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
@@ -1959,6 +1994,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/deepmerge/-/deepmerge-2.2.1.tgz"
     integrity sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==
   
+  deepmerge@^4.0.0:
+    version "4.2.2"
+    resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
+    integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
+  
   defer-to-connect@^2.0.0:
     version "2.0.1"
     resolved "https://registry.yarnpkg.com/defer-to-connect/-/defer-to-connect-2.0.1.tgz#8016bdb4143e4632b77a3449c6236277de520587"
@@ -2075,6 +2115,11 @@ Lockfile:
     integrity sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==
     dependencies:
       once "^1.4.0"
+  
+  enquire.js@^2.1.6:
+    version "2.1.6"
+    resolved "https://registry.yarnpkg.com/enquire.js/-/enquire.js-2.1.6.tgz#3e8780c9b8b835084c3f60e166dbc3c2a3c89814"
+    integrity sha1-PoeAybi4NQhMP2DhZtvDwqPImBQ=
   
   enquirer@^2.3.5:
     version "2.3.6"
@@ -3079,6 +3124,13 @@ Lockfile:
     resolved "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
     integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
   
+  json2mq@^0.2.0:
+    version "0.2.0"
+    resolved "https://registry.yarnpkg.com/json2mq/-/json2mq-0.2.0.tgz#b637bd3ba9eabe122c83e9720483aeb10d2c904a"
+    integrity sha1-tje9O6nqvhIsg+lyBIOusQ0skEo=
+    dependencies:
+      string-convert "^0.2.0"
+  
   json5@^1.0.1:
     version "1.0.1"
     resolved "https://registry.npmjs.org/json5/-/json5-1.0.1.tgz"
@@ -3126,6 +3178,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.1.6.tgz"
     integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
   
+  load-script@^1.0.0:
+    version "1.0.0"
+    resolved "https://registry.yarnpkg.com/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
+    integrity sha1-BJGTngvuVkPuSUp+PaPSuscMbKQ=
+  
   loader-utils@1.2.3:
     version "1.2.3"
     resolved "https://registry.npmjs.org/loader-utils/-/loader-utils-1.2.3.tgz"
@@ -3159,6 +3216,11 @@ Lockfile:
     version "4.5.0"
     resolved "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz"
     integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
+  
+  lodash.debounce@^4.0.8:
+    version "4.0.8"
+    resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+    integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
   
   lodash.merge@^4.6.2:
     version "4.6.2"
@@ -3232,6 +3294,11 @@ Lockfile:
       hash-base "^3.0.0"
       inherits "^2.0.1"
       safe-buffer "^5.1.2"
+  
+  memoize-one@^5.1.1:
+    version "5.2.1"
+    resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+    integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
   
   merge-stream@^2.0.0:
     version "2.0.0"
@@ -3788,6 +3855,15 @@ Lockfile:
     resolved "https://registry.npmjs.org/progress/-/progress-2.0.3.tgz"
     integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
   
+  prop-types@^15.5.8:
+    version "15.8.0"
+    resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.0.tgz#d237e624c45a9846e469f5f31117f970017ff588"
+    integrity sha512-fDGekdaHh65eI3lMi5OnErU6a8Ighg2KjcjQxO7m8VHyWjcPyj5kiOgV1LQDOOOgVy3+5FgjXvdSSX7B8/5/4g==
+    dependencies:
+      loose-envify "^1.4.0"
+      object-assign "^4.1.1"
+      react-is "^16.13.1"
+  
   prop-types@^15.6.2, prop-types@^15.7.2:
     version "15.7.2"
     resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
@@ -3890,7 +3966,14 @@ Lockfile:
       object-assign "^4.1.1"
       scheduler "^0.20.2"
   
-  react-fast-compare@3.2.0:
+  react-easy-swipe@^0.0.21:
+    version "0.0.21"
+    resolved "https://registry.yarnpkg.com/react-easy-swipe/-/react-easy-swipe-0.0.21.tgz#ce9384d576f7a8529dc2ca377c1bf03920bac8eb"
+    integrity sha512-OeR2jAxdoqUMHIn/nS9fgreI5hSpgGoL5ezdal4+oO7YSSgJR8ga+PkYGJrSrJ9MKlPcQjMQXnketrD7WNmNsg==
+    dependencies:
+      prop-types "^15.5.8"
+  
+  react-fast-compare@3.2.0, react-fast-compare@^3.0.1:
     version "3.2.0"
     resolved "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.0.tgz"
     integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
@@ -3922,10 +4005,21 @@ Lockfile:
     resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
     integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
   
-  react-is@^16.7.0, react-is@^16.8.1:
+  react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1:
     version "16.13.1"
     resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
     integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+  
+  react-player@^2.9.0:
+    version "2.9.0"
+    resolved "https://registry.yarnpkg.com/react-player/-/react-player-2.9.0.tgz#ef7fe7073434087565f00ff219824e1e02c4b046"
+    integrity sha512-jNUkTfMmUhwPPAktAdIqiBcVUKsFKrVGH6Ocutj6535CNfM91yrvWxHg6fvIX8Y/fjYUPoejddwh7qboNV9vGA==
+    dependencies:
+      deepmerge "^4.0.0"
+      load-script "^1.0.0"
+      memoize-one "^5.1.1"
+      prop-types "^15.7.2"
+      react-fast-compare "^3.0.1"
   
   react-query@^3.25.0:
     version "3.32.1"
@@ -3959,6 +4053,26 @@ Lockfile:
       tslib "^1.0.0"
       use-callback-ref "^1.2.3"
       use-sidecar "^1.0.1"
+  
+  react-responsive-carousel@^3.2.22:
+    version "3.2.22"
+    resolved "https://registry.yarnpkg.com/react-responsive-carousel/-/react-responsive-carousel-3.2.22.tgz#6281603daa33656940d01e207f511b83c0093c70"
+    integrity sha512-/r7dsIaN+l417IYIS0Fr7Z5VlpK3KYnTIIsdVCWSqtuJRIZNM+qdBIA4RIbzQtuW/ZBTnQanBecblCxg0HCqLQ==
+    dependencies:
+      classnames "^2.2.5"
+      prop-types "^15.5.8"
+      react-easy-swipe "^0.0.21"
+  
+  react-slick@^0.28.1:
+    version "0.28.1"
+    resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.28.1.tgz#12c18d991b59432df9c3757ba540a227b3fb85b9"
+    integrity sha512-JwRQXoWGJRbUTE7eZI1rGIHaXX/4YuwX6gn7ulfvUZ4vFDVQAA25HcsHSYaUiRCduTr6rskyIuyPMpuG6bbluw==
+    dependencies:
+      classnames "^2.2.5"
+      enquire.js "^2.1.6"
+      json2mq "^0.2.0"
+      lodash.debounce "^4.0.8"
+      resize-observer-polyfill "^1.5.0"
   
   react-ssr-prepass@^1.4.0:
     version "1.4.0"
@@ -4037,6 +4151,11 @@ Lockfile:
     version "2.0.2"
     resolved "https://registry.npmjs.org/require-from-string/-/require-from-string-2.0.2.tgz"
     integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
+  
+  resize-observer-polyfill@^1.5.0:
+    version "1.5.1"
+    resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+    integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
   
   resolve-alpn@^1.0.0:
     version "1.2.1"
@@ -4254,6 +4373,11 @@ Lockfile:
     integrity sha1-FhhUhpRCACGhGC/wrxkRwSl2F3M=
     dependencies:
       debug "2"
+  
+  string-convert@^0.2.0:
+    version "0.2.1"
+    resolved "https://registry.yarnpkg.com/string-convert/-/string-convert-0.2.1.tgz#6982cc3049fbb4cd85f8b24568b9d9bf39eeff97"
+    integrity sha1-aYLMMEn7tM2F+LJFaLnZvznu/5c=
   
   string-hash@1.1.3:
     version "1.1.3"
